@@ -4,7 +4,6 @@ import { AuthShell } from "@/components/auth-shell";
 import { createClient } from "@/lib/supabase/client";
 import { ArrowRight, Eye, EyeOff, LockKeyhole, Mail } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export function LoginForm() {
@@ -13,7 +12,6 @@ export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
 
   const handleLogin = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -21,13 +19,17 @@ export function LoginForm() {
     setIsLoading(true);
     try {
       const supabase = createClient();
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) throw error;
-      router.replace("/dashboard");
-      router.refresh();
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      if (signInError) throw signInError;
+      if (!data.session) throw new Error("Could not establish a session. Please try again.");
+
+      // A full navigation ensures the next server request receives the new auth cookies.
+      window.location.replace("/dashboard");
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
-    } finally {
       setIsLoading(false);
     }
   };
@@ -35,7 +37,9 @@ export function LoginForm() {
   return (
     <AuthShell mode="login">
       <div className="mb-9">
-        <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600"><LockKeyhole className="h-6 w-6" /></div>
+        <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600">
+          <LockKeyhole className="h-6 w-6" />
+        </div>
         <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">Welcome back</h1>
         <p className="mt-3 text-sm leading-6 text-slate-500">Sign in to your account and pick up where you left off.</p>
       </div>
