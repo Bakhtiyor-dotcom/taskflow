@@ -108,6 +108,8 @@ export default function DashboardPage() {
   const [projectFilter, setProjectFilter] = useState("All");
   const [sortBy, setSortBy] = useState("newest");
   const [modalOpen, setModalOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<TaskForm>(EMPTY_FORM);
   const [activity, setActivity] = useState<Activity[]>([]);
@@ -296,18 +298,30 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f7f8fc] text-slate-800 md:flex">
-      <aside className="flex w-full flex-col border-r border-slate-200 bg-white md:sticky md:top-0 md:h-screen md:w-64 md:shrink-0">
-        <div className="flex items-center gap-3 border-b border-slate-100 px-6 py-5">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-600 text-xl font-bold text-white shadow-lg shadow-indigo-200">T</div>
-          <div><h1 className="text-xl font-bold tracking-tight">TaskFlow</h1><p className="text-xs text-slate-400">Workspace Manager</p></div>
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#f7f8fc] text-slate-800 md:flex">
+      <aside className="relative z-20 flex w-full min-w-0 flex-col border-b border-slate-200 bg-white md:sticky md:top-0 md:h-screen md:w-64 md:shrink-0 md:border-b-0 md:border-r">
+        <div className="flex items-center justify-between gap-3 border-b border-slate-100 px-4 py-4 md:px-6 md:py-5">
+          <div className="flex min-w-0 items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-600 text-xl font-bold text-white shadow-lg shadow-indigo-200">T</div>
+            <div className="min-w-0"><h1 className="text-xl font-bold tracking-tight">TaskFlow</h1><p className="text-xs text-slate-400">Workspace Manager</p></div>
+          </div>
+          <button
+            type="button"
+            aria-expanded={mobileMenuOpen}
+            aria-controls="taskflow-navigation"
+            aria-label={mobileMenuOpen ? "Close navigation" : "Open navigation"}
+            onClick={() => setMobileMenuOpen((open) => !open)}
+            className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-slate-200 text-xl text-slate-700 md:hidden"
+          >
+            {mobileMenuOpen ? "×" : "☰"}
+          </button>
         </div>
-        <nav className="flex gap-1 overflow-x-auto p-4 md:flex-1 md:flex-col">
+        <nav id="taskflow-navigation" className={`${mobileMenuOpen ? "flex" : "hidden"} flex-col gap-1 border-b border-slate-100 p-3 md:flex md:flex-1 md:border-b-0 md:p-4`}>
           <p className="mb-2 hidden px-3 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 md:block">Workspace</p>
-          <a href="#dashboard" className="flex shrink-0 items-center gap-3 rounded-xl bg-indigo-50 px-3 py-3 text-sm font-semibold text-indigo-700"><span>▦</span> Overview</a>
-          <a href="#tasks" className="flex shrink-0 items-center gap-3 rounded-xl px-3 py-3 text-sm text-slate-500 transition hover:bg-slate-50 hover:text-slate-900"><span>☷</span> My Tasks <span className="ml-auto rounded-md bg-slate-100 px-2 py-0.5 text-xs">{taskList.length}</span></a>
-          <a href="#projects" className="flex shrink-0 items-center gap-3 rounded-xl px-3 py-3 text-sm text-slate-500 transition hover:bg-slate-50 hover:text-slate-900"><span>▣</span> Projects</a>
-          <a href="#activity" className="flex shrink-0 items-center gap-3 rounded-xl px-3 py-3 text-sm text-slate-500 transition hover:bg-slate-50 hover:text-slate-900"><span>◷</span> Activity</a>
+          <a href="#dashboard" onClick={() => setMobileMenuOpen(false)} className="flex shrink-0 items-center gap-3 rounded-xl bg-indigo-50 px-3 py-3 text-sm font-semibold text-indigo-700"><span>▦</span> Overview</a>
+          <a href="#tasks" onClick={() => setMobileMenuOpen(false)} className="flex shrink-0 items-center gap-3 rounded-xl px-3 py-3 text-sm text-slate-500 transition hover:bg-slate-50 hover:text-slate-900"><span>☷</span> My Tasks <span className="ml-auto rounded-md bg-slate-100 px-2 py-0.5 text-xs">{taskList.length}</span></a>
+          <a href="#projects" onClick={() => setMobileMenuOpen(false)} className="flex shrink-0 items-center gap-3 rounded-xl px-3 py-3 text-sm text-slate-500 transition hover:bg-slate-50 hover:text-slate-900"><span>▣</span> Projects</a>
+          <a href="#activity" onClick={() => setMobileMenuOpen(false)} className="flex shrink-0 items-center gap-3 rounded-xl px-3 py-3 text-sm text-slate-500 transition hover:bg-slate-50 hover:text-slate-900"><span>◷</span> Activity</a>
           <div className="mt-auto hidden rounded-2xl bg-gradient-to-br from-indigo-600 to-violet-600 p-4 text-white md:block">
             <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl bg-white/20 text-lg">✦</div>
             <p className="font-semibold">Stay productive</p>
@@ -322,20 +336,20 @@ export default function DashboardPage() {
         </div>
       </aside>
 
-      <main id="dashboard" className="min-w-0 flex-1">
-        <header className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200/80 bg-white px-5 py-4 sm:px-8">
-          <div><p className="text-xs text-slate-400">Workspace / Overview</p><h2 className="mt-1 text-lg font-bold">Dashboard</h2></div>
-          <button type="button" onClick={logOut} className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50">Log out</button>
+      <main id="dashboard" className="w-full min-w-0 flex-1 overflow-hidden">
+        <header className="flex min-w-0 items-center justify-between gap-3 border-b border-slate-200/80 bg-white px-4 py-3 sm:px-8 sm:py-4">
+          <div className="min-w-0"><p className="hidden text-xs text-slate-400 sm:block">Workspace / Overview</p><h2 className="text-lg font-bold sm:mt-1">Dashboard</h2></div>
+          <button type="button" onClick={logOut} className="shrink-0 rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50">Log out</button>
         </header>
 
-        <div className="mx-auto max-w-[1400px] space-y-8 p-5 sm:p-8">
-          <section className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-            <div>
-              <p className="text-sm font-medium text-indigo-600">{todayLabel}</p>
-              <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-900">Your workspace</h2>
-              <p className="mt-2 text-sm text-slate-500">Manage tasks and track progress across your projects.</p>
+        <div className="mx-auto w-full max-w-[1400px] min-w-0 space-y-6 px-4 py-6 sm:space-y-8 sm:p-8">
+          <section className="flex min-w-0 flex-col justify-between gap-4 sm:flex-row sm:items-end">
+            <div className="min-w-0">
+              <p className="text-xs font-medium text-indigo-600 sm:text-sm">{todayLabel}</p>
+              <h2 className="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Your workspace</h2>
+              <p className="mt-2 text-sm leading-6 text-slate-500">Manage tasks and track progress across your projects.</p>
             </div>
-            <button type="button" onClick={openCreate} className="rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-200 transition hover:bg-indigo-700">+ New Task</button>
+            <button type="button" onClick={openCreate} className="w-full shrink-0 rounded-xl bg-indigo-600 px-5 py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-200 transition hover:bg-indigo-700 sm:w-auto sm:py-3">+ New Task</button>
           </section>
 
           {(error || saving) && (
@@ -344,31 +358,31 @@ export default function DashboardPage() {
             </div>
           )}
 
-          <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <section className="grid min-w-0 grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
             {stats.map((stat) => (
-              <div key={stat.label} className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-                <div className="flex items-center justify-between"><p className="text-sm font-medium text-slate-500">{stat.label}</p><span className={`flex h-10 w-10 items-center justify-center rounded-xl text-lg font-bold ${stat.color}`}>{stat.icon}</span></div>
-                <p className="mt-4 text-3xl font-bold tracking-tight text-slate-900">{stat.value}</p>
-                <p className="mt-2 text-xs text-slate-400">{stat.note}</p>
+              <div key={stat.label} className="min-w-0 rounded-2xl border border-slate-200/80 bg-white p-3.5 shadow-sm transition hover:shadow-md sm:p-5">
+                <div className="flex min-w-0 items-start justify-between gap-1"><p className="min-w-0 text-xs font-medium leading-5 text-slate-500 sm:text-sm">{stat.label}</p><span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-base font-bold sm:h-10 sm:w-10 sm:rounded-xl sm:text-lg ${stat.color}`}>{stat.icon}</span></div>
+                <p className="mt-3 text-2xl font-bold tracking-tight text-slate-900 sm:mt-4 sm:text-3xl">{stat.value}</p>
+                <p className="mt-1 hidden text-xs text-slate-400 sm:mt-2 sm:block">{stat.note}</p>
               </div>
             ))}
           </section>
 
-          <section id="projects" className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm sm:p-6">
+          <section id="projects" className="min-w-0 scroll-mt-5 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm sm:p-6">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div><h3 className="text-lg font-bold text-slate-900">Your Projects</h3><p className="mt-1 text-sm text-slate-500">Click a project to view its tasks.</p></div>
               <button type="button" onClick={() => { setProjectFilter("All"); document.getElementById("tasks")?.scrollIntoView({ behavior: "smooth" }); }} className="text-sm font-semibold text-indigo-600 hover:text-indigo-800">View all →</button>
             </div>
-            <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <div className="mt-5 grid min-w-0 grid-cols-2 gap-3 sm:mt-6 sm:gap-4 xl:grid-cols-4">
               {PROJECTS.map((project) => {
                 const tasks = taskList.filter((task) => task.project === project.name);
                 const done = tasks.filter((task) => task.status === "Completed").length;
                 const progress = tasks.length ? Math.round((done / tasks.length) * 100) : 0;
                 return (
-                  <button key={project.name} type="button" onClick={() => { setProjectFilter(project.name); document.getElementById("tasks")?.scrollIntoView({ behavior: "smooth" }); }} className={`rounded-xl border p-4 text-left transition hover:shadow-sm ${projectFilter === project.name ? "border-indigo-400 ring-2 ring-indigo-100" : "border-slate-200 hover:border-indigo-200"}`}>
-                    <div className="flex items-start justify-between gap-2"><div className={`h-10 w-10 rounded-xl ${project.color}`} /><span className={`rounded-lg px-2.5 py-1 text-xs ${project.tint}`}>{project.category}</span></div>
-                    <h4 className="mt-4 font-semibold text-slate-800">{project.name}</h4>
-                    <div className="mt-4 flex items-center justify-between text-xs"><span className="text-slate-400">{done} of {tasks.length} completed</span><span className="font-bold text-slate-700">{progress}%</span></div>
+                  <button key={project.name} type="button" onClick={() => { setProjectFilter(project.name); document.getElementById("tasks")?.scrollIntoView({ behavior: "smooth" }); }} className={`min-w-0 rounded-xl border p-3 text-left transition hover:shadow-sm sm:p-4 ${projectFilter === project.name ? "border-indigo-400 ring-2 ring-indigo-100" : "border-slate-200 hover:border-indigo-200"}`}>
+                    <div className="flex min-w-0 items-start justify-between gap-2"><div className={`h-9 w-9 shrink-0 rounded-xl sm:h-10 sm:w-10 ${project.color}`} /><span className={`min-w-0 truncate rounded-lg px-1.5 py-1 text-[10px] sm:px-2.5 sm:text-xs ${project.tint}`}>{project.category}</span></div>
+                    <h4 className="mt-3 min-h-[2.5rem] break-words text-sm font-semibold leading-5 text-slate-800 sm:mt-4 sm:min-h-0 sm:text-base">{project.name}</h4>
+                    <div className="mt-3 flex min-w-0 flex-wrap items-center justify-between gap-1 text-[11px] sm:mt-4 sm:text-xs"><span className="text-slate-400">{done} of {tasks.length} done</span><span className="font-bold text-slate-700">{progress}%</span></div>
                     <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-100"><div className={`h-full rounded-full ${project.color}`} style={{ width: `${progress}%` }} /></div>
                   </button>
                 );
@@ -376,19 +390,45 @@ export default function DashboardPage() {
             </div>
           </section>
 
-          <section id="tasks" className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm">
-            <div className="flex flex-wrap items-center justify-between gap-3 p-5 sm:p-6">
-              <div><h3 className="text-lg font-bold text-slate-900">My Tasks</h3><p className="mt-1 text-sm text-slate-500">{visibleTasks.length} of {taskList.length} tasks shown. Click a status to change it.</p></div>
-              <button type="button" onClick={clearFilters} className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50">Clear filters</button>
+          <section id="tasks" className="min-w-0 scroll-mt-5 overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm">
+            <div className="flex min-w-0 flex-wrap items-center justify-between gap-3 p-4 sm:p-6">
+              <div className="min-w-0"><h3 className="text-lg font-bold text-slate-900">My Tasks</h3><p className="mt-1 text-xs text-slate-500 sm:text-sm">{visibleTasks.length} of {taskList.length} tasks shown. Tap a status to change it.</p></div>
+              <div className="flex flex-wrap items-center gap-2">
+                <button type="button" aria-expanded={mobileFiltersOpen} onClick={() => setMobileFiltersOpen((open) => !open)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-600 md:hidden">{mobileFiltersOpen ? "Hide filters" : "Filters"}</button>
+                <button type="button" onClick={clearFilters} className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50">Clear filters</button>
+              </div>
             </div>
-            <div className="grid gap-3 border-t border-slate-100 p-5 sm:grid-cols-2 sm:p-6 xl:grid-cols-5">
-              <input aria-label="Search tasks" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search tasks..." className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-indigo-400 xl:col-span-1" />
-              <select aria-label="Filter status" value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)} className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm"><option value="All">All statuses</option><option>To Do</option><option>In Progress</option><option>Completed</option></select>
-              <select aria-label="Filter priority" value={priorityFilter} onChange={(event) => setPriorityFilter(event.target.value)} className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm"><option value="All">All priorities</option><option>High</option><option>Medium</option><option>Low</option></select>
-              <select aria-label="Filter project" value={projectFilter} onChange={(event) => setProjectFilter(event.target.value)} className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm"><option value="All">All projects</option>{PROJECTS.map((project) => <option key={project.name}>{project.name}</option>)}</select>
-              <select aria-label="Sort tasks" value={sortBy} onChange={(event) => setSortBy(event.target.value)} className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm"><option value="newest">Newest first</option><option value="oldest">Oldest first</option><option value="due">Due date</option><option value="priority">Priority</option></select>
+            <div className="grid min-w-0 gap-3 border-t border-slate-100 p-4 sm:grid-cols-2 sm:p-6 xl:grid-cols-5">
+              <input aria-label="Search tasks" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search tasks..." className="w-full min-w-0 rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-indigo-400 xl:col-span-1" />
+              <select aria-label="Filter status" value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)} className={`${mobileFiltersOpen ? "block" : "hidden"} w-full min-w-0 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm md:block`}><option value="All">All statuses</option><option>To Do</option><option>In Progress</option><option>Completed</option></select>
+              <select aria-label="Filter priority" value={priorityFilter} onChange={(event) => setPriorityFilter(event.target.value)} className={`${mobileFiltersOpen ? "block" : "hidden"} w-full min-w-0 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm md:block`}><option value="All">All priorities</option><option>High</option><option>Medium</option><option>Low</option></select>
+              <select aria-label="Filter project" value={projectFilter} onChange={(event) => setProjectFilter(event.target.value)} className={`${mobileFiltersOpen ? "block" : "hidden"} w-full min-w-0 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm md:block`}><option value="All">All projects</option>{PROJECTS.map((project) => <option key={project.name}>{project.name}</option>)}</select>
+              <select aria-label="Sort tasks" value={sortBy} onChange={(event) => setSortBy(event.target.value)} className={`${mobileFiltersOpen ? "block" : "hidden"} w-full min-w-0 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm md:block`}><option value="newest">Newest first</option><option value="oldest">Oldest first</option><option value="due">Due date</option><option value="priority">Priority</option></select>
             </div>
-            <div className="overflow-x-auto">
+            {/* On narrow screens, task cards replace the wide desktop table. */}
+            <div className="divide-y divide-slate-100 md:hidden">
+              {visibleTasks.map((task) => (
+                <article key={task.id} className="min-w-0 space-y-3 p-4">
+                  <div className="flex min-w-0 items-start justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <h4 className="break-words text-sm font-semibold text-slate-800">{task.title}</h4>
+                      <p className="mt-1 text-xs text-slate-400">{task.project}</p>
+                    </div>
+                    <span className={`shrink-0 rounded-lg px-2.5 py-1.5 text-xs font-medium ${PRIORITY_COLORS[task.priority]}`}>{task.priority}</span>
+                  </div>
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <button type="button" title="Tap to change status" disabled={saving} onClick={() => cycleStatus(task)} className={`rounded-lg px-3 py-2 text-xs font-semibold ${STATUS_COLORS[task.status]}`}>{task.status} ↻</button>
+                    <span className={`text-xs ${task.date && task.date < today && task.status !== "Completed" ? "font-semibold text-rose-600" : "text-slate-500"}`}>{formatDate(task.date)}</span>
+                  </div>
+                  <div className="flex gap-2 border-t border-slate-100 pt-3">
+                    <button type="button" disabled={saving} onClick={() => openEdit(task)} className="min-h-10 flex-1 rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700">Edit</button>
+                    <button type="button" disabled={saving} onClick={() => deleteTask(task)} className="min-h-10 flex-1 rounded-lg border border-rose-100 px-3 py-2 text-sm font-semibold text-rose-600">Delete</button>
+                  </div>
+                </article>
+              ))}
+              {visibleTasks.length === 0 && <p className="px-4 py-10 text-center text-sm text-slate-400">No tasks found. Clear filters or create a task.</p>}
+            </div>
+            <div className="hidden overflow-x-auto md:block">
               <table className="w-full min-w-[760px] text-left text-sm">
                 <thead className="border-y border-slate-100 bg-slate-50/70 text-xs text-slate-400"><tr><th className="px-6 py-4 font-medium">Task name</th><th className="px-6 py-4 font-medium">Priority</th><th className="px-6 py-4 font-medium">Status</th><th className="px-6 py-4 font-medium">Due date</th><th className="px-6 py-4 text-right font-medium">Actions</th></tr></thead>
                 <tbody className="divide-y divide-slate-100">
@@ -405,32 +445,32 @@ export default function DashboardPage() {
                 </tbody>
               </table>
             </div>
-            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 px-6 py-4"><span className="text-xs text-slate-400">Changes are saved securely in Supabase.</span><button type="button" onClick={openCreate} className="text-sm font-semibold text-indigo-600 hover:text-indigo-800">+ Add another task →</button></div>
+            <div className="flex flex-col items-start justify-between gap-3 border-t border-slate-100 px-4 py-4 sm:flex-row sm:items-center sm:px-6"><span className="text-xs text-slate-400">Changes are saved securely in Supabase.</span><button type="button" onClick={openCreate} className="text-sm font-semibold text-indigo-600 hover:text-indigo-800">+ Add another task →</button></div>
           </section>
 
-          <section id="activity" className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm sm:p-6">
+          <section id="activity" className="min-w-0 scroll-mt-5 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm sm:p-6">
             <h3 className="text-lg font-bold text-slate-900">Recent Activity</h3>
             <p className="mt-1 text-sm text-slate-500">Actions from this session.</p>
-            {activity.length ? <ul className="mt-4 divide-y divide-slate-100">{activity.map((item) => <li key={item.id} className="flex items-center justify-between gap-4 py-3 text-sm"><span>{item.message}</span><span className="shrink-0 text-xs text-slate-400">{item.time}</span></li>)}</ul> : <p className="mt-4 rounded-xl bg-slate-50 p-4 text-sm text-slate-400">Your activity will appear here after you add, edit, delete, or update a task.</p>}
+            {activity.length ? <ul className="mt-4 divide-y divide-slate-100">{activity.map((item) => <li key={item.id} className="flex min-w-0 flex-wrap items-center justify-between gap-2 py-3 text-sm"><span>{item.message}</span><span className="shrink-0 text-xs text-slate-400">{item.time}</span></li>)}</ul> : <p className="mt-4 rounded-xl bg-slate-50 p-4 text-sm text-slate-400">Your activity will appear here after you add, edit, delete, or update a task.</p>}
           </section>
           <footer className="pb-2 text-center text-xs text-slate-400">TaskFlow · Project management made simple</footer>
         </div>
       </main>
 
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setModalOpen(false); }}>
-          <div role="dialog" aria-modal="true" aria-labelledby="task-dialog-title" className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl sm:p-8">
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-slate-900/50 p-0 sm:items-center sm:p-4" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setModalOpen(false); }}>
+          <div role="dialog" aria-modal="true" aria-labelledby="task-dialog-title" className="max-h-[94dvh] w-full max-w-lg overflow-y-auto overscroll-contain rounded-t-3xl bg-white p-5 pb-8 shadow-2xl sm:max-h-[90vh] sm:rounded-2xl sm:p-8">
             <div className="mb-6 flex items-center justify-between gap-3"><div><h2 id="task-dialog-title" className="text-xl font-bold text-slate-900">{editingId ? "Edit task" : "Create new task"}</h2><p className="mt-1 text-sm text-slate-500">Set the details of your task.</p></div><button type="button" aria-label="Close dialog" onClick={() => setModalOpen(false)} className="rounded-lg px-2 py-1 text-2xl text-slate-400 hover:bg-slate-100">×</button></div>
             {error && <p role="alert" className="mb-4 rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700">{error}</p>}
             <form onSubmit={saveTask} className="space-y-4">
               <label className="block text-sm font-semibold text-slate-700">Task name<input autoFocus required maxLength={120} value={form.title} onChange={(event) => setForm({ ...form, title: event.target.value })} placeholder="What needs to be done?" className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-3 font-normal outline-none focus:border-indigo-500" /></label>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <label className="block text-sm font-semibold text-slate-700">Project<select value={form.project} onChange={(event) => setForm({ ...form, project: event.target.value })} className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-3 font-normal">{PROJECTS.map((project) => <option key={project.name}>{project.name}</option>)}</select></label>
-                <label className="block text-sm font-semibold text-slate-700">Priority<select value={form.priority} onChange={(event) => setForm({ ...form, priority: event.target.value as Priority })} className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-3 font-normal"><option>Low</option><option>Medium</option><option>High</option></select></label>
-                <label className="block text-sm font-semibold text-slate-700">Status<select value={form.status} onChange={(event) => setForm({ ...form, status: event.target.value as Status })} className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-3 font-normal"><option>To Do</option><option>In Progress</option><option>Completed</option></select></label>
-                <label className="block text-sm font-semibold text-slate-700">Due date<input type="date" value={form.date} onChange={(event) => setForm({ ...form, date: event.target.value })} className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-3 font-normal" /></label>
+                <label className="block text-sm font-semibold text-slate-700">Project<select value={form.project} onChange={(event) => setForm({ ...form, project: event.target.value })} className="mt-2 w-full min-w-0 rounded-xl border border-slate-200 bg-white px-3 py-3 font-normal">{PROJECTS.map((project) => <option key={project.name}>{project.name}</option>)}</select></label>
+                <label className="block text-sm font-semibold text-slate-700">Priority<select value={form.priority} onChange={(event) => setForm({ ...form, priority: event.target.value as Priority })} className="mt-2 w-full min-w-0 rounded-xl border border-slate-200 bg-white px-3 py-3 font-normal"><option>Low</option><option>Medium</option><option>High</option></select></label>
+                <label className="block text-sm font-semibold text-slate-700">Status<select value={form.status} onChange={(event) => setForm({ ...form, status: event.target.value as Status })} className="mt-2 w-full min-w-0 rounded-xl border border-slate-200 bg-white px-3 py-3 font-normal"><option>To Do</option><option>In Progress</option><option>Completed</option></select></label>
+                <label className="block text-sm font-semibold text-slate-700">Due date<input type="date" value={form.date} onChange={(event) => setForm({ ...form, date: event.target.value })} className="mt-2 w-full min-w-0 rounded-xl border border-slate-200 bg-white px-3 py-3 font-normal" /></label>
               </div>
-              <div className="flex justify-end gap-3 pt-3"><button type="button" onClick={() => setModalOpen(false)} className="rounded-xl border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-600 hover:bg-slate-50">Cancel</button><button type="submit" disabled={saving} className="rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white hover:bg-indigo-700">{saving ? "Saving..." : editingId ? "Save changes" : "Create task"}</button></div>
+              <div className="flex flex-col-reverse gap-3 pt-3 sm:flex-row sm:justify-end"><button type="button" onClick={() => setModalOpen(false)} className="rounded-xl border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-600 hover:bg-slate-50">Cancel</button><button type="submit" disabled={saving} className="rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white hover:bg-indigo-700">{saving ? "Saving..." : editingId ? "Save changes" : "Create task"}</button></div>
             </form>
           </div>
         </div>
