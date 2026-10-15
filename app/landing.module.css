@@ -1,114 +1,35 @@
-.heroGrid {
-  background-image:
-    linear-gradient(rgba(200, 200, 255, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(200, 200, 255, 0.035) 1px, transparent 1px);
-  background-size: 64px 64px;
-  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.65), transparent 95%);
+.dotGrid {
+  background-image: radial-gradient(rgba(156, 168, 230, .15) 1px, transparent 1px);
+  background-size: 26px 26px;
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,.8) 0%, rgba(0,0,0,.6) 70%, transparent 100%);
 }
-
-.glowPurple {
-  background: radial-gradient(circle, rgba(105, 85, 252, 0.36) 0%, rgba(105, 85, 252, 0.12) 34%, transparent 70%);
-  filter: blur(20px);
-  animation: breathe 9s ease-in-out infinite alternate;
+.blueGlow {
+  background: radial-gradient(circle, rgba(35, 86, 218, .22), rgba(25, 51, 137, .08) 42%, transparent 70%);
+  filter: blur(18px);
+  animation: slowBreathe 14s ease-in-out infinite alternate;
 }
-
-.glowBlue {
-  background: radial-gradient(circle, rgba(37, 117, 228, 0.35) 0%, rgba(37, 117, 228, 0.12) 36%, transparent 70%);
+.purpleGlow {
+  background: radial-gradient(circle, rgba(111, 61, 215, .25), rgba(81, 55, 164, .09) 42%, transparent 70%);
   filter: blur(17px);
-  animation: breathe 12s ease-in-out 1s infinite alternate-reverse;
+  animation: slowBreathe 11s ease-in-out 1s infinite alternate-reverse;
 }
-
-.glowPink {
-  background: radial-gradient(circle, rgba(173, 72, 227, 0.23) 0%, rgba(173, 72, 227, 0.09) 35%, transparent 70%);
-  filter: blur(30px);
-}
-
-.orbit {
-  transform: translateX(-50%) rotate(-12deg);
-  border-radius: 50%;
-}
-
 .gradientText {
-  background: linear-gradient(95deg, #d0c9ff 0%, #a795ff 42%, #78d2fd 100%);
+  background: linear-gradient(96deg, #90baff 2%, #ad9dff 52%, #b78cff 96%);
   -webkit-background-clip: text;
   background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: transparent;
 }
-
-.primaryCta {
-  box-shadow: 0 16px 40px rgba(93, 74, 242, 0.23), inset 0 1px 0 rgba(255, 255, 255, 0.21);
-}
-
-.previewEntrance {
-  animation: riseIn 1s cubic-bezier(0.19, 1, 0.22, 1) 0.25s both;
-}
-
-.previewCard {
-  transform: rotate(0.6deg);
-  transition: transform 0.6s ease, box-shadow 0.6s ease;
-}
-
-.previewCard:hover {
-  transform: rotate(0deg) translateY(-4px);
-  box-shadow: 0 45px 100px rgba(5, 8, 30, 0.55);
-}
-
-.floatSlow {
-  animation: drift 7s ease-in-out infinite alternate;
-}
-
-.floatCardOne {
-  animation: floatOne 6s ease-in-out infinite;
-}
-
-.floatCardTwo {
-  animation: floatTwo 6.5s ease-in-out 1s infinite;
-}
-
-.revealOne {
-  animation: riseIn 0.9s cubic-bezier(0.19, 1, 0.22, 1) both;
-}
-
-.revealTwo {
-  animation: riseIn 1.1s cubic-bezier(0.19, 1, 0.22, 1) 0.18s both;
-}
-
-.ctaPanel {
-  box-shadow: 0 24px 70px rgba(50, 45, 115, 0.12);
-}
-
-@keyframes riseIn {
-  0% { opacity: 0; transform: translateY(32px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes breathe {
-  from { opacity: 0.75; transform: scale(0.9) translateY(6px); }
-  to { opacity: 1; transform: scale(1.15) translateY(-15px); }
-}
-
-@keyframes drift {
-  from { transform: translate3d(0, 0, 0); }
-  to { transform: translate3d(16px, -15px, 0); }
-}
-
-@keyframes floatOne {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-11px); }
-}
-
-@keyframes floatTwo {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(12px); }
-}
-
-@media (max-width: 640px) {
-  .previewCard { transform: none; }
-  .previewCard:hover { transform: none; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .glowPurple, .glowBlue, .floatSlow, .floatCardOne, .floatCardTwo,
-  .previewEntrance, .revealOne, .revealTwo { animation: none !important; }
-  .previewCard, .previewCard:hover { transform: none; transition: none; }
-}
+.primaryButton { box-shadow: 0 15px 35px rgba(67, 83, 247, .3), inset 0 1px 0 rgba(255,255,255,.2); }
+.boardHalo { background: radial-gradient(ellipse at center, rgba(97,90,244,.25), transparent 67%); filter: blur(22px); }
+.boardFrame { transform: perspective(1200px) rotateY(-2.5deg) rotateX(1.5deg); transition: transform .5s ease, box-shadow .5s ease; }
+.boardFrame:hover { transform: perspective(1200px) rotateY(0deg) rotateX(0deg) translateY(-3px); box-shadow: 0 38px 100px rgba(0,0,0,.58); }
+.boardScroll { scrollbar-width: thin; scrollbar-color: rgba(151,158,217,.3) transparent; }
+.revealOne { animation: riseIn .9s cubic-bezier(.17,.7,.2,1) both; }
+.boardEntrance { animation: riseIn 1.1s cubic-bezier(.17,.7,.2,1) .15s both; }
+.floatingBadge { animation: floatBadge 7s ease-in-out infinite; }
+.ctaPanel { box-shadow: 0 30px 80px rgba(31,32,116,.27); }
+@keyframes slowBreathe { from { opacity: .75; transform: scale(.94); } to { opacity: 1; transform: scale(1.12); } }
+@keyframes riseIn { from { opacity: 0; transform: translateY(32px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes floatBadge { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+@media (max-width: 1023px) { .boardFrame { transform: none; } .boardFrame:hover { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .blueGlow, .purpleGlow, .revealOne, .boardEntrance, .floatingBadge { animation: none !important; } .boardFrame, .boardFrame:hover { transform: none !important; transition: none !important; } }

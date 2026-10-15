@@ -1,0 +1,88 @@
+/* TaskFlow design foundation — shared semantic tokens and components.
+   Add class="tf-app" on the parent layout when adopting these styles.
+   Existing public and authentication pages are unchanged until migrated. */
+:root {
+  --tf-midnight: #0c1029;
+  --tf-midnight-soft: #171b3c;
+  --tf-purple: #6b4dfb;
+  --tf-purple-light: #a273ff;
+  --tf-sky: #50b2ff;
+  --tf-canvas: #f5f4fb;
+  --tf-surface: #ffffff;
+  --tf-text: #20233e;
+  --tf-muted: #76809a;
+  --tf-border: #e8e8f2;
+  --tf-radius: 22px;
+  --tf-shadow: 0 16px 44px -24px rgba(18, 19, 63, .23);
+  --tf-focus: 0 0 0 4px rgba(107, 77, 251, .18);
+}
+
+.tf-app {
+  background: var(--tf-canvas);
+  color: var(--tf-text);
+  min-height: 100vh;
+}
+.tf-app .tf-surface {
+  background: var(--tf-surface);
+  border: 1px solid var(--tf-border);
+  border-radius: var(--tf-radius);
+  box-shadow: var(--tf-shadow);
+}
+.tf-app .tf-primary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .6rem;
+  border-radius: 13px;
+  background: linear-gradient(115deg, #554af8 0%, #8b4bfa 100%);
+  padding: .8rem 1.2rem;
+  font-weight: 700;
+  color: #fff;
+  box-shadow: 0 10px 24px -11px rgba(100, 73, 252, .65);
+  transition: transform .22s ease, box-shadow .22s ease, filter .22s ease;
+}
+.tf-app .tf-primary-button:hover:not(:disabled) { transform: translateY(-2px); filter: brightness(1.05); box-shadow: 0 15px 26px -12px rgba(100, 73, 252, .7); }
+.tf-app .tf-primary-button:disabled { cursor: not-allowed; opacity: .58; }
+.tf-app .tf-secondary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  border: 1px solid var(--tf-border);
+  border-radius: 13px;
+  padding: .75rem 1rem;
+  background: #fff;
+  color: var(--tf-text);
+  font-weight: 650;
+  transition: background-color .2s ease, border-color .2s ease;
+}
+.tf-app .tf-secondary-button:hover { background: #f9f8ff; border-color: #d8d2ff; }
+.tf-app :is(button, a, input, select, textarea):focus-visible {
+  outline: 2px solid var(--tf-purple);
+  outline-offset: 3px;
+}
+.tf-app .tf-input {
+  width: 100%;
+  border: 1px solid var(--tf-border);
+  border-radius: 13px;
+  background: #fff;
+  padding: .75rem 1rem;
+  outline: none;
+  color: var(--tf-text);
+}
+.tf-app .tf-input:focus { border-color: var(--tf-purple); box-shadow: var(--tf-focus); }
+.tf-app .tf-sidebar { background: var(--tf-midnight); }
+.tf-app .tf-nav-active { background: linear-gradient(100deg, rgba(112,83,255,.31), rgba(90,104,233,.14)); border-color: rgba(155,137,255,.22); }
+.tf-app .tf-stat-icon { background: linear-gradient(135deg, #eeeaff 0%, #e2e8ff 100%); color: #6849e9; }
+.tf-app .tf-gradient-text { background: linear-gradient(100deg, #8887ff, #bc91ff); color: transparent; background-clip: text; }
+.tf-app :is(#projects, #tasks, #activity) { scroll-margin-top: 100px; }
+.tf-app .tf-app-backdrop {
+  background-image: radial-gradient(circle at 90% 4%, rgba(172,150,255,.10), transparent 32%), radial-gradient(circle at 10% 10%, rgba(128,164,255,.06), transparent 26%);
+}
+@keyframes tf-fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.tf-app .tf-animate-in { animation: tf-fade-in .5s ease-out both; }
+@media (prefers-reduced-motion: reduce) {
+  .tf-app .tf-animate-in { animation: none; }
+  .tf-app .tf-primary-button { transition: none; }
+  .tf-app .tf-primary-button:hover { transform: none; }
+}

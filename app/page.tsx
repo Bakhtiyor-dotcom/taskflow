@@ -9,190 +9,217 @@ import {
   CircleDot,
   Clock3,
   FolderKanban,
-  LayoutDashboard,
-  ListTodo,
+  Layers3,
+  LockKeyhole,
   ShieldCheck,
   Sparkles,
   Target,
   Zap,
+  ListTodo,
 } from "lucide-react";
+import { TaskFlowBrand } from "@/components/taskflow/brand";
 import styles from "./landing.module.css";
+
+// These are illustrative tasks for the public landing page, not user data.
+const previewColumns = [
+  {
+    label: "To do",
+    count: 2,
+    dot: "bg-[#fbbf70]",
+    badge: "text-amber-200 bg-amber-300/10",
+    tasks: [
+      {
+        title: "Plan launch checklist",
+        project: "Marketing",
+        priority: "High",
+        badge: "bg-rose-400/15 text-rose-200",
+        progress: 25,
+        bar: "bg-[#fb6b87]",
+      },
+      {
+        title: "Prepare design assets",
+        project: "Website Redesign",
+        priority: "Medium",
+        badge: "bg-amber-400/15 text-amber-200",
+        progress: 15,
+        bar: "bg-[#f6ba66]",
+      },
+    ],
+  },
+  {
+    label: "In progress",
+    count: 2,
+    dot: "bg-[#7c91ff]",
+    badge: "text-indigo-200 bg-indigo-300/10",
+    tasks: [
+      {
+        title: "Build new landing page",
+        project: "Website Redesign",
+        priority: "High",
+        badge: "bg-rose-400/15 text-rose-200",
+        progress: 68,
+        bar: "bg-[#7e8eff]",
+      },
+      {
+        title: "Review app layout",
+        project: "Mobile App",
+        priority: "Medium",
+        badge: "bg-amber-400/15 text-amber-200",
+        progress: 45,
+        bar: "bg-[#a987fc]",
+      },
+    ],
+  },
+  {
+    label: "Completed",
+    count: 2,
+    dot: "bg-[#50d5aa]",
+    badge: "text-emerald-200 bg-emerald-300/10",
+    tasks: [
+      {
+        title: "Set up workspace",
+        project: "Personal",
+        priority: "Low",
+        badge: "bg-emerald-400/15 text-emerald-200",
+        progress: 100,
+        bar: "bg-[#42cca4]",
+      },
+      {
+        title: "Define project goals",
+        project: "Marketing",
+        priority: "Low",
+        badge: "bg-emerald-400/15 text-emerald-200",
+        progress: 100,
+        bar: "bg-[#42cca4]",
+      },
+    ],
+  },
+];
 
 const features = [
   {
-    icon: ListTodo,
-    title: "All your tasks. One clear view.",
-    description:
-      "Capture to-dos, update their status, and find exactly what needs your attention.",
-    gradient: "from-violet-500 to-indigo-600",
-    tint: "bg-violet-50",
+    Icon: ListTodo,
+    title: "Everything in its place",
+    description: "Keep all your tasks together and move work forward with clear status updates.",
+    number: "01",
+    tone: "from-indigo-500/20 to-blue-500/10",
+    icon: "text-indigo-200",
   },
   {
-    icon: FolderKanban,
-    title: "Projects without the chaos.",
-    description:
-      "Keep work organized by project and watch your progress take shape.",
-    gradient: "from-sky-500 to-cyan-500",
-    tint: "bg-sky-50",
+    Icon: FolderKanban,
+    title: "Projects, simplified",
+    description: "Organize tasks by project and see the progress you are making at a glance.",
+    number: "02",
+    tone: "from-violet-500/20 to-fuchsia-500/10",
+    icon: "text-violet-200",
   },
   {
-    icon: CalendarDays,
-    title: "Deadlines under control.",
-    description:
-      "Set due dates and priorities so the important things never get lost.",
-    gradient: "from-fuchsia-500 to-pink-500",
-    tint: "bg-fuchsia-50",
+    Icon: CalendarDays,
+    title: "Stay ahead of deadlines",
+    description: "Set due dates and priorities to focus on the work that matters most.",
+    number: "03",
+    tone: "from-cyan-500/20 to-sky-500/10",
+    icon: "text-cyan-200",
   },
 ];
 
-const previewTasks = [
-  {
-    title: "Design new landing page",
-    project: "Website Redesign",
-    tag: "In Progress",
-    tagStyle: "bg-indigo-50 text-indigo-600",
-    iconStyle: "bg-indigo-100 text-indigo-600",
-    Icon: CircleDot,
-  },
-  {
-    title: "Review project feedback",
-    project: "Mobile App",
-    tag: "To Do",
-    tagStyle: "bg-amber-50 text-amber-700",
-    iconStyle: "bg-amber-100 text-amber-700",
-    Icon: Clock3,
-  },
-  {
-    title: "Prepare launch checklist",
-    project: "Marketing",
-    tag: "Completed",
-    tagStyle: "bg-emerald-50 text-emerald-700",
-    iconStyle: "bg-emerald-100 text-emerald-600",
-    Icon: Check,
-  },
-];
-
-function Brand({ light = false }: { light?: boolean }) {
+function TaskPreviewCard({
+  title,
+  project,
+  priority,
+  badge,
+  progress,
+  bar,
+}: {
+  title: string;
+  project: string;
+  priority: string;
+  badge: string;
+  progress: number;
+  bar: string;
+}) {
   return (
-    <Link href="/" className="group inline-flex items-center gap-3" aria-label="TaskFlow home">
-      <span className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-[13px] bg-gradient-to-br from-[#8678ff] via-[#6256f7] to-[#4436ce] text-lg font-extrabold text-white shadow-lg shadow-indigo-500/20 sm:h-11 sm:w-11">
-        <span className="absolute -right-2 -top-3 h-8 w-8 rounded-full bg-white/20 blur-md" />
-        <span className="relative">T</span>
-      </span>
-      <span className={`text-xl font-extrabold tracking-[-0.055em] ${light ? "text-white" : "text-[#151b35]"}`}>
-        Task<span className={light ? "text-[#a69fff]" : "text-indigo-600"}>Flow</span>
-      </span>
-    </Link>
+    <div className="rounded-[15px] border border-white/[0.08] bg-[#181f3b] px-3.5 py-3.5 shadow-[0_10px_26px_rgba(0,0,0,.15)]">
+      <div className="flex items-center justify-between gap-2">
+        <span className={`rounded-md px-2 py-1 text-[9px] font-bold ${badge}`}>{priority}</span>
+        <span className="truncate text-[9px] text-[#8792b2]">{project}</span>
+      </div>
+      <p className="mt-3 min-h-[34px] text-[11px] font-bold leading-[17px] tracking-[-.01em] text-[#f5f6ff]">
+        {title}
+      </p>
+      <div className="mt-3 flex items-center justify-between text-[9px] text-[#909bbc]">
+        <span>Progress</span>
+        <span className="font-semibold text-white/80">{progress}%</span>
+      </div>
+      <div className="mt-1.5 h-[5px] overflow-hidden rounded-full bg-white/[0.07]">
+        <div className={`h-full rounded-full ${bar}`} style={{ width: `${progress}%` }} />
+      </div>
+      <div className="mt-3.5 flex items-center justify-between border-t border-white/[0.06] pt-2.5">
+        <span className="flex -space-x-1.5" aria-hidden="true">
+          <span className="h-5 w-5 rounded-full border-2 border-[#181f3b] bg-[#7286ee]" />
+          <span className="h-5 w-5 rounded-full border-2 border-[#181f3b] bg-[#bb74dc]" />
+        </span>
+        <span className="flex items-center gap-1 text-[9px] text-[#9aa5c5]">
+          {progress === 100 ? <Check size={12} /> : <Clock3 size={12} />}
+          {progress === 100 ? "Done" : "Active"}
+        </span>
+      </div>
+    </div>
   );
 }
 
-function DashboardPreview() {
+function BoardPreview() {
   return (
-    <div className={`relative mx-auto w-full max-w-[585px] ${styles.previewEntrance}`}>
-      <div className={`pointer-events-none absolute -left-8 top-1/3 h-36 w-36 rounded-full bg-indigo-400/30 blur-[75px] ${styles.floatSlow}`} />
-      <div className="pointer-events-none absolute -right-4 -top-4 h-48 w-48 rounded-full bg-sky-400/20 blur-[80px]" />
-
-      {/* Static example UI — not the signed-in user's data. */}
-      <div className={`relative overflow-hidden rounded-[22px] border border-white/30 bg-[#f9faff] shadow-[0_35px_90px_rgba(5,8,30,0.45)] ring-1 ring-indigo-200/20 sm:rounded-[26px] ${styles.previewCard}`}>
-        <div className="flex items-center justify-between border-b border-slate-100 bg-white px-4 py-3 sm:px-5">
-          <div className="flex items-center gap-2">
-            <span className="h-[7px] w-[7px] rounded-full bg-[#ff6b72]" />
-            <span className="h-[7px] w-[7px] rounded-full bg-[#ffcb57]" />
-            <span className="h-[7px] w-[7px] rounded-full bg-[#46c792]" />
+    <div className={`relative w-full ${styles.boardEntrance}`}>
+      <div className={`pointer-events-none absolute -inset-7 rounded-[35px] ${styles.boardHalo}`} aria-hidden="true" />
+      <div className={`relative overflow-hidden rounded-[21px] border border-[#535f9c]/40 bg-[#0d142b] shadow-[0_32px_100px_rgba(0,0,0,.52)] ${styles.boardFrame}`}>
+        <div className="flex h-12 items-center gap-3 border-b border-white/[0.075] bg-[#141b34] px-4">
+          <div className="flex shrink-0 gap-[5px]" aria-hidden="true">
+            <span className="h-2 w-2 rounded-full bg-[#fa6680]" />
+            <span className="h-2 w-2 rounded-full bg-[#ffc56c]" />
+            <span className="h-2 w-2 rounded-full bg-[#46caa2]" />
           </div>
-          <span className="text-[10px] font-semibold tracking-wide text-slate-400 sm:text-xs">
-            TaskFlow / Dashboard preview
-          </span>
-          <div className="flex h-5 w-5 items-center justify-center rounded-md bg-indigo-50 text-indigo-500">
-            <LayoutDashboard className="h-3 w-3" />
+          <div className="mx-auto h-[21px] w-[50%] rounded-md border border-white/[0.045] bg-[#202946]" />
+          <span className="rounded-md bg-indigo-400/10 px-2 py-1 text-[9px] font-bold uppercase tracking-wider text-indigo-200">Preview</span>
+        </div>
+        <div className="border-b border-white/[0.055] px-4 py-3.5 sm:px-5">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-[9px] font-bold uppercase tracking-[.18em] text-[#9b9ff0]">YOUR WORKSPACE</p>
+              <h3 className="mt-1 text-[18px] font-extrabold leading-6 text-white">Project board</h3>
+            </div>
+            <span className="inline-flex items-center gap-1 rounded-lg bg-[#5e65ef] px-2.5 py-2 text-[10px] font-semibold text-white">
+              <Zap size={11} /> Tasks
+            </span>
+          </div>
+          <div className="mt-3 flex items-center gap-4 border-b border-white/[0.07] pb-2 text-[10px]">
+            <span className="border-b-2 border-[#9995ff] pb-2 font-bold text-[#c4c3ff]">Board</span>
+            <span className="pb-2 text-[#818dab]">Projects</span>
+            <span className="pb-2 text-[#818dab]">Overview</span>
           </div>
         </div>
-
-        <div className="flex min-h-[323px] sm:min-h-[385px]">
-          <aside className="hidden w-[112px] shrink-0 border-r border-slate-100 bg-white px-3 py-5 sm:block">
-            <div className="mb-7 flex items-center gap-2 pl-1">
-              <span className="flex h-6 w-6 items-center justify-center rounded-md bg-indigo-600 text-xs font-bold text-white">T</span>
-              <span className="text-[11px] font-extrabold text-slate-800">TaskFlow</span>
-            </div>
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 rounded-lg bg-indigo-50 px-2 py-2 text-[10px] font-semibold text-indigo-600">
-                <LayoutDashboard className="h-3 w-3" /> Overview
-              </div>
-              <div className="flex items-center gap-2 px-2 py-2 text-[10px] font-medium text-slate-400">
-                <ListTodo className="h-3 w-3" /> My Tasks
-              </div>
-              <div className="flex items-center gap-2 px-2 py-2 text-[10px] font-medium text-slate-400">
-                <FolderKanban className="h-3 w-3" /> Projects
-              </div>
-            </div>
-            <div className="mt-[80px] rounded-xl bg-gradient-to-br from-indigo-500 to-violet-500 p-2.5 text-[9px] font-semibold text-white">
-              Make today count ✦
-              <div className="mt-2 h-1 overflow-hidden rounded-full bg-white/30"><div className="h-full w-2/3 rounded-full bg-white" /></div>
-            </div>
-          </aside>
-
-          <div className="min-w-0 flex-1 px-4 pb-4 pt-5 sm:px-5 sm:pt-6">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <p className="mb-1 text-[9px] font-semibold uppercase tracking-[0.18em] text-indigo-500 sm:text-[10px]">YOUR WORKSPACE</p>
-                <h3 className="text-[20px] font-extrabold tracking-tight text-[#151b35] sm:text-[23px]">Good morning 👋</h3>
-                <p className="mt-1 text-[10px] text-slate-400 sm:text-xs">Make progress, one task at a time.</p>
-              </div>
-              <span className="hidden rounded-lg bg-indigo-600 px-3 py-2 text-[10px] font-semibold text-white shadow-md shadow-indigo-200 sm:block">+ New Task</span>
-            </div>
-
-            <div className="mt-5 grid grid-cols-3 gap-2 sm:gap-3">
-              {[
-                { label: "Total Tasks", value: "12", accent: "bg-indigo-50 text-indigo-600" },
-                { label: "Completed", value: "08", accent: "bg-emerald-50 text-emerald-600" },
-                { label: "In Progress", value: "04", accent: "bg-sky-50 text-sky-600" },
-              ].map((item) => (
-                <div key={item.label} className="min-w-0 rounded-[13px] border border-[#edf0f8] bg-white px-2.5 py-3 shadow-[0_3px_14px_rgba(35,44,90,0.03)] sm:px-3.5 sm:py-4">
-                  <p className="whitespace-nowrap text-[8px] font-semibold text-slate-400 sm:text-[10px]">{item.label}</p>
-                  <div className="mt-2 flex items-end justify-between gap-1">
-                    <span className="text-xl font-extrabold leading-none text-[#202746] sm:text-2xl">{item.value}</span>
-                    <span className={`hidden h-5 w-5 items-center justify-center rounded-md text-xs sm:flex ${item.accent}`}>
-                      <Check className="h-3 w-3" />
-                    </span>
-                  </div>
+        <div className={`${styles.boardScroll} overflow-x-auto px-3 pb-4 pt-4 sm:px-4`}>
+          <div className="grid min-w-[495px] grid-cols-3 gap-2.5">
+            {previewColumns.map((column) => (
+              <div key={column.label} className="min-w-0 rounded-xl border border-white/[0.05] bg-[#111831] p-2.5">
+                <div className="mb-3 flex items-center justify-between gap-1.5">
+                  <span className="flex items-center gap-1.5 truncate text-[10px] font-bold text-[#dbe0f3]">
+                    <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${column.dot}`} />
+                    {column.label}
+                  </span>
+                  <span className={`rounded-md px-1.5 py-0.5 text-[9px] font-bold ${column.badge}`}>{column.count}</span>
                 </div>
-              ))}
-            </div>
-
-            <div className="mt-3 rounded-[13px] border border-[#edf0f8] bg-white p-3 sm:mt-4 sm:p-4">
-              <div className="mb-3 flex items-center justify-between gap-2">
-                <h4 className="text-[11px] font-bold text-[#202746] sm:text-xs">Recent tasks</h4>
-                <span className="text-[9px] font-semibold text-indigo-500">View all <span aria-hidden="true">→</span></span>
+                <div className="space-y-2.5">
+                  {column.tasks.map((task) => <TaskPreviewCard key={task.title} {...task} />)}
+                </div>
               </div>
-              <div className="space-y-0.5">
-                {previewTasks.map((task) => (
-                  <div key={task.title} className="flex min-w-0 items-center gap-2 border-t border-slate-50 py-2 sm:gap-3 sm:py-2.5">
-                    <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${task.iconStyle}`}>
-                      <task.Icon className="h-3.5 w-3.5" />
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-[10px] font-semibold text-slate-700 sm:text-[11px]">{task.title}</p>
-                      <p className="mt-0.5 truncate text-[9px] text-slate-400">{task.project}</p>
-                    </div>
-                    <span className={`hidden shrink-0 rounded-md px-2 py-1 text-[9px] font-semibold sm:inline-flex ${task.tagStyle}`}>{task.tag}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="mt-3 flex items-center gap-2 rounded-lg border border-indigo-100 bg-indigo-50/80 px-3 py-2 text-[10px] text-indigo-500 sm:mt-4">
-              <ShieldCheck className="h-3.5 w-3.5 shrink-0" /> Your work, neatly organized.
-            </div>
+            ))}
           </div>
         </div>
       </div>
-
-      <div className={`absolute -right-2 -top-7 hidden items-center gap-2 rounded-2xl border border-white/70 bg-white/95 px-4 py-3 shadow-[0_16px_42px_rgba(9,10,40,0.2)] backdrop-blur-md sm:flex lg:-right-8 ${styles.floatCardOne}`}>
-        <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600"><CheckCircle2 className="h-5 w-5" /></span>
-        <span><span className="block text-xs font-bold text-slate-800">Looking good!</span><span className="mt-0.5 block text-[10px] text-slate-500">Your progress is adding up</span></span>
-      </div>
-      <div className={`absolute -bottom-6 -left-3 hidden items-center gap-2 rounded-2xl border border-white/70 bg-white/95 px-4 py-3 shadow-[0_16px_42px_rgba(9,10,40,0.2)] backdrop-blur-md sm:flex lg:-left-9 ${styles.floatCardTwo}`}>
-        <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-violet-100 text-violet-600"><Target className="h-5 w-5" /></span>
-        <span><span className="block text-xs font-bold text-slate-800">Stay focused</span><span className="mt-0.5 block text-[10px] text-slate-500">One step at a time</span></span>
+      <div className={`pointer-events-none absolute -bottom-5 -left-3 hidden items-center gap-2.5 rounded-xl border border-white/15 bg-[#1e2850]/95 p-3 shadow-2xl backdrop-blur sm:flex ${styles.floatingBadge}`}>
+        <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-400/15 text-emerald-300"><CheckCircle2 size={19} /></span>
+        <div><p className="text-xs font-bold text-white">Keep work moving</p><p className="text-[10px] text-[#adb6d4]">From to-do to done</p></div>
       </div>
     </div>
   );
@@ -200,141 +227,127 @@ function DashboardPreview() {
 
 export default function LandingPage() {
   return (
-    <main className="min-h-screen overflow-x-hidden bg-[#f8f9ff] text-[#151b35]">
-      <div className="relative isolate overflow-hidden bg-[#090e26] text-white">
-        <div className={`pointer-events-none absolute inset-0 ${styles.heroGrid}`} aria-hidden="true" />
-        <div className={`pointer-events-none absolute -left-[260px] -top-[360px] h-[700px] w-[700px] rounded-full ${styles.glowPurple}`} aria-hidden="true" />
-        <div className={`pointer-events-none absolute -right-[340px] top-[25px] h-[740px] w-[740px] rounded-full ${styles.glowBlue}`} aria-hidden="true" />
-        <div className={`pointer-events-none absolute bottom-[-450px] left-[22%] h-[650px] w-[650px] rounded-full ${styles.glowPink}`} aria-hidden="true" />
-        <div className={`pointer-events-none absolute left-1/2 top-[165px] h-[520px] w-[760px] -translate-x-1/2 rounded-full border border-white/[0.035] ${styles.orbit}`} aria-hidden="true" />
+    <main className="min-h-screen overflow-x-hidden bg-[#090e22] text-white">
+      <div className="relative isolate overflow-hidden">
+        <div className={`pointer-events-none absolute inset-0 ${styles.dotGrid}`} aria-hidden="true" />
+        <div className={`pointer-events-none absolute -left-[380px] -top-[430px] h-[850px] w-[900px] rounded-full ${styles.blueGlow}`} aria-hidden="true" />
+        <div className={`pointer-events-none absolute -right-[450px] top-[35px] h-[850px] w-[900px] rounded-full ${styles.purpleGlow}`} aria-hidden="true" />
 
-        <header className="relative z-20 border-b border-white/[0.07]">
-          <div className="mx-auto flex max-w-[1220px] items-center justify-between gap-3 px-5 py-5 sm:px-8 lg:px-10">
-            <Brand light />
-            <nav className="hidden items-center gap-8 md:flex" aria-label="Main navigation">
-              <a href="#features" className="text-sm font-medium text-slate-300 transition hover:text-white">Features</a>
-              <a href="#how-it-works" className="text-sm font-medium text-slate-300 transition hover:text-white">How it works</a>
-              <a href="#about" className="text-sm font-medium text-slate-300 transition hover:text-white">About</a>
+        <header className="relative z-20 border-b border-white/[0.075] bg-[#090e22]/70 backdrop-blur-xl">
+          <div className="mx-auto flex max-w-[1340px] items-center justify-between gap-4 px-5 py-4 sm:px-8 lg:px-10">
+            <TaskFlowBrand light compact className="sm:hidden" />
+            <TaskFlowBrand light className="hidden sm:inline-flex" />
+            <nav className="hidden items-center gap-8 text-[13px] font-semibold text-[#a4aecb] md:flex" aria-label="Main navigation">
+              <a href="#features" className="transition hover:text-white">Features</a>
+              <a href="#how-it-works" className="transition hover:text-white">How it works</a>
+              <a href="#about" className="transition hover:text-white">About</a>
             </nav>
-            <div className="flex items-center gap-1.5 sm:gap-3">
-              <Link href="/auth/login" className="rounded-xl px-3 py-2.5 text-xs font-semibold text-slate-200 transition hover:bg-white/10 hover:text-white sm:px-4 sm:text-sm">Log In</Link>
-              <Link href="/auth/sign-up" className="group inline-flex items-center gap-1.5 rounded-xl border border-white/20 bg-white px-3.5 py-2.5 text-xs font-bold text-[#25234a] shadow-[0_8px_30px_rgba(0,0,0,0.15)] transition hover:-translate-y-0.5 hover:bg-[#f1efff] sm:gap-2 sm:px-5 sm:text-sm">
-                Sign Up <ArrowUpRight className="h-3.5 w-3.5 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </Link>
+            <div className="flex items-center gap-2 sm:gap-4">
+              <Link href="/auth/login" className="rounded-xl px-2 py-2.5 text-xs font-semibold text-[#d9def2] transition hover:text-white sm:px-3 sm:text-sm">Log in</Link>
+              <Link href="/auth/sign-up" className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-[#526fff] to-[#7f56fc] px-3.5 py-2.5 text-xs font-bold text-white shadow-[0_10px_25px_rgba(94,90,255,.22)] transition hover:brightness-110 sm:px-5 sm:text-sm">Sign up free <ArrowUpRight className="h-3.5 w-3.5" /></Link>
             </div>
           </div>
         </header>
 
-        <section className="relative z-10 mx-auto grid max-w-[1220px] items-center gap-14 px-5 pb-28 pt-16 sm:px-8 sm:pb-32 sm:pt-20 lg:grid-cols-[0.92fr_1.08fr] lg:gap-12 lg:px-10 lg:pb-44 lg:pt-28">
+        <section className="relative mx-auto grid max-w-[1340px] items-center gap-14 px-5 pb-28 pt-16 sm:px-8 lg:grid-cols-[.84fr_1.16fr] lg:gap-10 lg:px-10 lg:pb-40 lg:pt-28">
           <div className={styles.revealOne}>
-            <div className="mb-7 inline-flex max-w-full items-center gap-2 rounded-full border border-violet-300/25 bg-violet-400/10 px-3.5 py-2 text-[11px] font-semibold tracking-wide text-[#dedbff] backdrop-blur-xl sm:text-xs">
-              <Sparkles className="h-3.5 w-3.5 shrink-0 text-[#b9adff]" />
-              Your calm corner for productive work
-              <ChevronRight className="h-3.5 w-3.5 shrink-0 opacity-70" />
-            </div>
-
-            <h1 className="max-w-[680px] text-[clamp(2.9rem,7vw,5.1rem)] font-extrabold leading-[1.07] tracking-[-0.067em] text-white">
-              Big ideas.<br />
-              <span className={styles.gradientText}>Clear priorities.</span><br />
-              Real progress.
+            <span className="inline-flex items-center gap-2 rounded-full border border-[#9c9bfd]/25 bg-[#7773ec]/10 px-3.5 py-2 text-[11px] font-bold uppercase tracking-[.13em] text-[#b5b6ff]">
+              <Sparkles size={14} /> Clear space for better work
+            </span>
+            <h1 className="mt-7 max-w-[630px] text-[clamp(3rem,5.3vw,5.8rem)] font-black leading-[1.06] tracking-[-.065em] text-white">
+              Organize work.<br />
+              <span className={styles.gradientText}>Make it happen.</span>
             </h1>
-            <p className="mt-7 max-w-[530px] text-[15px] leading-[1.85] text-[#aab5d0] sm:text-[17px]">
-              A beautiful place to plan your day, manage projects, and turn your to-dos into done. Less clutter. More momentum.
+            <p className="mt-7 max-w-[490px] text-[16px] leading-[1.85] text-[#a8b2cf] sm:text-lg">
+              One beautiful space to manage tasks, organize projects, set priorities, and make progress every day.
             </p>
-
-            <div className="mt-9 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
-              <Link href="/auth/sign-up" className={`group inline-flex items-center justify-center gap-2.5 rounded-[15px] bg-gradient-to-r from-[#7667ff] via-[#6655f5] to-[#7f5dff] px-7 py-[17px] text-[15px] font-bold text-white transition hover:-translate-y-1 hover:shadow-[0_18px_40px_rgba(105,86,250,0.38)] ${styles.primaryCta}`}>
-                Get started free <ArrowRight className="h-[18px] w-[18px] transition group-hover:translate-x-1" />
+            <div className="mt-9 flex flex-wrap gap-3">
+              <Link href="/auth/sign-up" className={`inline-flex min-h-[52px] items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-[#4d7aff] via-[#6264fb] to-[#8152f8] px-6 py-3.5 text-sm font-extrabold text-white transition hover:-translate-y-0.5 hover:brightness-110 ${styles.primaryButton}`}>
+                Get started — it&apos;s free <ArrowRight size={17} />
               </Link>
-              <a href="#preview" className="inline-flex items-center justify-center gap-2.5 rounded-[15px] border border-white/20 bg-white/[0.055] px-7 py-[17px] text-[15px] font-semibold text-white backdrop-blur-xl transition hover:bg-white/10">
-                Explore TaskFlow <ArrowUpRight className="h-4 w-4 text-slate-300" />
-              </a>
+              <Link href="/dashboard" className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/[0.055] px-6 py-3.5 text-sm font-bold text-[#e8ebff] transition hover:bg-white/10">
+                Open dashboard <ChevronRight size={17} />
+              </Link>
             </div>
-
-            <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 text-xs font-medium text-[#b3bdd4] sm:mt-12">
-              <span className="inline-flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-[#72dec9]" /> Organized projects</span>
-              <span className="inline-flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-[#72dec9]" /> Secure sign-in</span>
-              <span className="inline-flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-[#72dec9]" /> Made for any screen</span>
+            <div className="mt-9 flex flex-wrap gap-x-6 gap-y-3 text-xs text-[#9ba9ca]">
+              <span className="inline-flex items-center gap-2"><ShieldCheck size={16} className="text-[#6ee5bd]" /> Secure account</span>
+              <span className="inline-flex items-center gap-2"><Layers3 size={16} className="text-[#a99cff]" /> Organized projects</span>
+              <span className="inline-flex items-center gap-2"><Target size={16} className="text-[#80bbff]" /> Clear priorities</span>
             </div>
           </div>
-
-          <div id="preview" className={`relative min-w-0 scroll-mt-20 py-6 sm:px-4 lg:py-9 ${styles.revealTwo}`}>
-            <DashboardPreview />
+          <div className="min-w-0 lg:pl-3">
+            <BoardPreview />
+            <p className="mt-8 text-center text-[11px] text-[#7885a5]">Illustrative interface preview · Your own tasks appear after signing in</p>
           </div>
         </section>
-
-        <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#f8f9ff] to-transparent" aria-hidden="true" />
       </div>
 
-      <section id="features" className="relative mx-auto max-w-[1220px] scroll-mt-20 px-5 pb-24 pt-12 sm:px-8 sm:pb-32 lg:px-10 lg:pt-16">
-        <div className="mx-auto max-w-[720px] text-center">
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-indigo-50 px-4 py-2 text-[11px] font-extrabold uppercase tracking-[0.16em] text-indigo-600">
-            <Zap className="h-3.5 w-3.5" /> Everything in sync
+      <section id="features" className="relative border-t border-white/[0.055] bg-[#0b1128] px-5 py-24 sm:px-8 lg:px-10 lg:py-32">
+        <div className="mx-auto max-w-[1260px]">
+          <div className="mx-auto max-w-[710px] text-center">
+            <span className="text-[12px] font-bold uppercase tracking-[.25em] text-[#999dff]">WHY TASKFLOW</span>
+            <h2 className="mt-4 text-4xl font-extrabold tracking-[-.045em] sm:text-5xl">Less chaos. <span className={styles.gradientText}>More progress.</span></h2>
+            <p className="mt-5 text-base leading-8 text-[#9da9c7]">Thoughtful tools that help you plan your work, see what matters, and finish with confidence.</p>
           </div>
-          <h2 className="text-[clamp(2rem,4.8vw,3.7rem)] font-extrabold leading-[1.12] tracking-[-0.06em] text-[#151b35]">Your workflow, <span className="text-indigo-600">beautifully simple.</span></h2>
-          <p className="mx-auto mt-5 max-w-[580px] text-[15px] leading-8 text-slate-500 sm:text-base">The essentials you need to keep moving forward, without the noise that gets in your way.</p>
-        </div>
-
-        <div className="mt-12 grid gap-5 md:grid-cols-3 lg:gap-6">
-          {features.map(({ icon: Icon, title, description, gradient, tint }, i) => (
-            <div key={title} className={`group relative overflow-hidden rounded-[26px] border border-[#e9ebf7] bg-white p-7 shadow-[0_10px_40px_rgba(31,38,90,0.035)] transition duration-300 hover:-translate-y-2 hover:shadow-[0_25px_60px_rgba(54,54,140,0.10)] sm:p-8 `}>
-              <div className={`mb-7 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${gradient} text-white shadow-lg shadow-indigo-500/10`}><Icon className="h-6 w-6" /></div>
-              <div className="mb-3 text-[11px] font-bold tracking-[0.17em] text-slate-400">0{i + 1} / FEATURE</div>
-              <h3 className="max-w-[250px] text-[22px] font-extrabold leading-snug tracking-[-0.04em] text-[#151b35]">{title}</h3>
-              <p className="mt-4 max-w-[320px] text-[14px] leading-[1.85] text-slate-500">{description}</p>
-              <div className={`absolute -bottom-16 -right-14 h-44 w-44 rounded-full ${tint} opacity-50 blur-2xl transition duration-300 group-hover:opacity-100`} aria-hidden="true" />
-            </div>
-          ))}
+          <div className="mt-14 grid gap-5 md:grid-cols-3">
+            {features.map(({ Icon, title, description, number, tone, icon }) => (
+              <article key={title} className="group relative overflow-hidden rounded-[25px] border border-white/[0.08] bg-[#131a36] p-7 transition duration-300 hover:-translate-y-1 hover:border-indigo-400/35 hover:bg-[#172042] sm:p-8">
+                <div className={`absolute -right-10 -top-12 h-44 w-44 rounded-full bg-gradient-to-br blur-2xl ${tone}`} aria-hidden="true" />
+                <div className="relative flex items-center justify-between">
+                  <span className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.06]"><Icon size={27} className={icon} strokeWidth={1.7} /></span>
+                  <span className="text-sm font-extrabold text-white/20">{number}</span>
+                </div>
+                <h3 className="relative mt-8 text-xl font-extrabold tracking-tight text-white">{title}</h3>
+                <p className="relative mt-3 text-sm leading-7 text-[#9faac8]">{description}</p>
+                <div className="relative mt-7 inline-flex items-center gap-1 text-xs font-bold text-[#9e9eff]">Built for focus <ArrowUpRight size={14} /></div>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 
-      <section id="how-it-works" className="scroll-mt-20 bg-white py-20 sm:py-28">
-        <div className="mx-auto grid max-w-[1220px] items-center gap-12 px-5 sm:px-8 lg:grid-cols-2 lg:gap-20 lg:px-10">
+      <section id="how-it-works" className="relative px-5 py-24 sm:px-8 lg:px-10 lg:py-32">
+        <div className="mx-auto grid max-w-[1260px] items-center gap-12 lg:grid-cols-[.82fr_1.18fr] lg:gap-20">
           <div>
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-violet-100 bg-violet-50 px-4 py-2 text-[11px] font-extrabold uppercase tracking-[0.16em] text-violet-600"><Target className="h-3.5 w-3.5" /> Find your flow</div>
-            <h2 className="max-w-[530px] text-[clamp(2rem,4.2vw,3.6rem)] font-extrabold leading-[1.13] tracking-[-0.06em] text-[#151b35]">From scattered thoughts to <span className="text-indigo-600">getting things done.</span></h2>
-            <p className="mt-6 max-w-[490px] text-[15px] leading-8 text-slate-500">Simple enough for your daily to-dos. Structured enough to keep every project moving in the right direction.</p>
-            <Link href="/auth/sign-up" className="group mt-8 inline-flex items-center gap-2 text-sm font-bold text-indigo-600 transition hover:gap-3">Start organizing today <ArrowRight className="h-4 w-4" /></Link>
+            <span className="text-[12px] font-bold uppercase tracking-[.25em] text-[#999dff]">YOUR WORKFLOW, SIMPLIFIED</span>
+            <h2 className="mt-4 text-4xl font-extrabold leading-[1.12] tracking-[-.045em] sm:text-5xl">From ideas to <span className={styles.gradientText}>done.</span></h2>
+            <p className="mt-5 max-w-[480px] text-base leading-8 text-[#9da9c7]">Get started with a personal workspace and turn bigger projects into manageable tasks.</p>
+            <Link href="/auth/sign-up" className="mt-8 inline-flex items-center gap-2 text-sm font-bold text-[#b3afff] transition hover:text-white">Create your workspace <ArrowRight size={17} /></Link>
           </div>
-          <div className="rounded-[28px] border border-[#eef0f9] bg-[#f8f9ff] p-5 sm:p-8">
+          <div className="grid gap-4">
             {[
-              { number: "01", title: "Capture what's on your mind", text: "Add a task before a great idea slips away.", icon: ListTodo },
-              { number: "02", title: "Give it a place and priority", text: "Choose a project, set a deadline, stay clear.", icon: FolderKanban },
-              { number: "03", title: "Make progress visible", text: "Move work forward and celebrate what's done.", icon: CheckCircle2 },
-            ].map(({ number, title, text, icon: Icon }, index) => (
-              <div key={number} className={`flex items-start gap-4 py-5 sm:gap-5 ${index !== 0 ? "border-t border-[#e8eaf5]" : ""}`}>
-                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white text-indigo-600 shadow-sm sm:h-14 sm:w-14"><Icon className="h-5 w-5 sm:h-6 sm:w-6" /></span>
-                <div className="min-w-0 flex-1"><div className="mb-1 text-[11px] font-bold tracking-widest text-indigo-500">STEP {number}</div><h3 className="text-[17px] font-bold tracking-tight text-[#202743] sm:text-lg">{title}</h3><p className="mt-1.5 text-sm leading-6 text-slate-500">{text}</p></div>
-                <ChevronRight className="mt-3 hidden h-5 w-5 text-slate-300 sm:block" />
+              { Icon: FolderKanban, n: "01", title: "Choose a project", desc: "Keep different parts of your work organized." },
+              { Icon: CircleDot, n: "02", title: "Set priorities and dates", desc: "Give each task a clear next step and deadline." },
+              { Icon: CheckCircle2, n: "03", title: "Track your progress", desc: "Update task status and watch your completion rate grow." },
+            ].map(({ Icon, n, title, desc }) => (
+              <div key={n} className="flex items-center gap-4 rounded-[20px] border border-white/[0.08] bg-white/[0.035] p-5 transition hover:bg-white/[0.06] sm:gap-6 sm:p-6">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-indigo-400/10 text-[#aaa6ff]"><Icon size={22} /></div>
+                <div className="min-w-0 flex-1"><h3 className="font-bold text-white">{title}</h3><p className="mt-1 text-sm leading-6 text-[#9da9c7]">{desc}</p></div>
+                <span className="hidden text-sm font-extrabold text-white/25 sm:block">{n}</span>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="about" className="px-5 py-20 sm:px-8 sm:py-28 lg:px-10">
-        <div className={`relative mx-auto max-w-[1140px] overflow-hidden rounded-[30px] bg-[#141438] px-6 py-16 text-center text-white sm:rounded-[36px] sm:px-12 sm:py-20 ${styles.ctaPanel}`}>
-          <div className="pointer-events-none absolute -left-16 -top-40 h-80 w-80 rounded-full bg-indigo-500/30 blur-[85px]" aria-hidden="true" />
-          <div className="pointer-events-none absolute -bottom-48 -right-20 h-96 w-96 rounded-full bg-fuchsia-500/30 blur-[90px]" aria-hidden="true" />
-          <div className="relative z-10">
-            <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-semibold text-[#dedbff]"><Sparkles className="h-3.5 w-3.5" /> Your next chapter starts here</span>
-            <h2 className="mx-auto mt-6 max-w-[730px] text-[clamp(2.15rem,5vw,4rem)] font-extrabold leading-[1.12] tracking-[-0.06em]">More focus. Less busywork.<br /><span className={styles.gradientText}>Better days ahead.</span></h2>
-            <p className="mx-auto mt-5 max-w-[530px] text-[15px] leading-8 text-slate-300">Your next big project starts with one small step. Give it the space it deserves.</p>
-            <Link href="/auth/sign-up" className="group mt-9 inline-flex items-center gap-2.5 rounded-[15px] bg-white px-7 py-4 text-sm font-bold text-[#26234c] shadow-xl transition hover:-translate-y-1 hover:bg-[#f1efff]">Create your workspace <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" /></Link>
+      <section id="about" className="px-5 pb-24 pt-2 sm:px-8 lg:px-10 lg:pb-32">
+        <div className={`relative mx-auto max-w-[1260px] overflow-hidden rounded-[32px] border border-indigo-300/20 bg-gradient-to-br from-[#353d8b] via-[#272665] to-[#191947] px-6 py-14 text-center sm:px-12 sm:py-20 ${styles.ctaPanel}`}>
+          <div className="pointer-events-none absolute -right-16 -top-24 h-80 w-80 rounded-full bg-[#7169ff]/25 blur-3xl" aria-hidden="true" />
+          <div className="pointer-events-none absolute -bottom-32 -left-10 h-80 w-80 rounded-full bg-[#36a9ff]/15 blur-3xl" aria-hidden="true" />
+          <div className="relative">
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-bold text-[#d8d8ff]"><LockKeyhole size={13} /> Your workspace awaits</span>
+            <h2 className="mx-auto mt-5 max-w-[750px] text-4xl font-extrabold leading-[1.14] tracking-[-.045em] sm:text-5xl">Your next great project starts with a single task.</h2>
+            <p className="mx-auto mt-5 max-w-[560px] text-sm leading-7 text-[#c4cafa] sm:text-base">Plan clearly, stay focused, and make steady progress with TaskFlow.</p>
+            <Link href="/auth/sign-up" className="mt-8 inline-flex items-center gap-2.5 rounded-2xl bg-white px-7 py-3.5 text-sm font-extrabold text-[#403ac8] shadow-xl shadow-black/10 transition hover:-translate-y-0.5 hover:bg-[#f3f2ff]">Get started free <ArrowRight size={17} /></Link>
           </div>
         </div>
       </section>
 
-      <footer className="border-t border-[#e9ebf6] bg-white">
-        <div className="mx-auto flex max-w-[1220px] flex-col items-center justify-between gap-5 px-5 py-8 sm:flex-row sm:px-8 lg:px-10">
-          <Brand />
-          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs font-medium text-slate-500">
-            <a href="#features" className="transition hover:text-indigo-600">Features</a>
-            <a href="#how-it-works" className="transition hover:text-indigo-600">How it works</a>
-            <Link href="/auth/login" className="transition hover:text-indigo-600">Log In</Link>
-            <Link href="/auth/sign-up" className="transition hover:text-indigo-600">Sign Up</Link>
-          </div>
-          <span className="text-xs text-slate-400">© TaskFlow</span>
+      <footer className="border-t border-white/[0.07] px-5 py-8 sm:px-8 lg:px-10">
+        <div className="mx-auto flex max-w-[1260px] flex-col items-start justify-between gap-5 sm:flex-row sm:items-center">
+          <TaskFlowBrand light />
+          <p className="text-xs text-[#8290b3]">TaskFlow · Built for a clearer workday.</p>
+          <div className="flex gap-5 text-xs font-semibold text-[#a3aec9]"><Link href="/auth/login" className="hover:text-white">Log in</Link><Link href="/auth/sign-up" className="hover:text-white">Sign up</Link><Link href="/dashboard" className="hover:text-white">Dashboard</Link></div>
         </div>
       </footer>
     </main>

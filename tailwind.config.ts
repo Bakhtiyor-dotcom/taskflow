@@ -11,6 +11,17 @@ export default {
   theme: {
     extend: {
       colors: {
+        // Shared TaskFlow palette: landing, app, authentication and admin.
+        taskflow: {
+          midnight: "#0c1029",
+          deep: "#171b3c",
+          purple: "#6b4dfb",
+          violet: "#a273ff",
+          sky: "#50b2ff",
+          canvas: "#f5f4fb",
+          ink: "#20233e",
+          muted: "#76809a",
+        },
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {
@@ -51,6 +62,10 @@ export default {
           "4": "hsl(var(--chart-4))",
           "5": "hsl(var(--chart-5))",
         },
+      },
+      boxShadow: {
+        "tf-panel": "0 16px 44px -24px rgba(18, 19, 63, .23)",
+        "tf-glow": "0 12px 28px -12px rgba(107, 77, 251, .65)",
       },
       borderRadius: {
         lg: "var(--radius)",
