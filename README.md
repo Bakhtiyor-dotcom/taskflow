@@ -1,109 +1,135 @@
-<a href="https://demo-nextjs-with-supabase.vercel.app/">
-  <img alt="Next.js and Supabase Starter Kit - the fastest way to build apps with Next.js and Supabase" src="https://demo-nextjs-with-supabase.vercel.app/opengraph-image.png">
-  <h1 align="center">Next.js and Supabase Starter Kit</h1>
-</a>
+<div align="center">
 
-<p align="center">
- The fastest way to build apps with Next.js and Supabase
-</p>
+# TaskFlow
 
-<p align="center">
-  <a href="#features"><strong>Features</strong></a> ·
-  <a href="#demo"><strong>Demo</strong></a> ·
-  <a href="#deploy-to-vercel"><strong>Deploy to Vercel</strong></a> ·
-  <a href="#clone-and-run-locally"><strong>Clone and run locally</strong></a> ·
-  <a href="#feedback-and-issues"><strong>Feedback and issues</strong></a>
-  <a href="#more-supabase-examples"><strong>More Examples</strong></a>
-</p>
-<br/>
+### Organize work. Make it happen.
+
+A responsive task and project management web application with a Kanban board, secure accounts, and a private admin dashboard.
+
+**[Live Application](https://taskflow-bakhti.vercel.app/)** · **[Source Code](https://github.com/Bakhtiyor-dotcom/taskflow)** · **[Features](#features)** · **[Getting Started](#getting-started)**
+
+![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=nextdotjs)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?logo=tailwindcss&logoColor=white)
+![Supabase](https://img.shields.io/badge/Supabase-3FCF8E?logo=supabase&logoColor=white)
+![Vercel](https://img.shields.io/badge/Deployed_on-Vercel-black?logo=vercel)
+
+</div>
+
+![TaskFlow landing page — premium dark SaaS interface](docs/screenshots/landing.jpg)
+
+## Overview
+
+**TaskFlow** is a full-stack productivity application for organizing tasks across projects. Users can sign up, manage their private task lists, track progress, and move cards through a Kanban workflow. A separate, access-controlled admin area provides platform-wide metrics.
+
+Built as a portfolio project with a focus on a polished UI, responsive layouts, and real data persistence through Supabase.
 
 ## Features
 
-- Works across the entire [Next.js](https://nextjs.org) stack
-  - App Router
-  - Pages Router
-  - Proxy
-  - Client
-  - Server
-  - It just works!
-- supabase-ssr. A package to configure Supabase Auth to use cookies
-- Password-based authentication block installed via the [Supabase UI Library](https://supabase.com/ui/docs/nextjs/password-based-auth)
-- Styling with [Tailwind CSS](https://tailwindcss.com)
-- Components with [shadcn/ui](https://ui.shadcn.com/)
-- Optional deployment with [Supabase Vercel Integration and Vercel deploy](#deploy-your-own)
-  - Environment variables automatically assigned to Vercel project
+- **Account access:** email/password authentication, registration, and password recovery powered by Supabase Auth.
+- **Task management:** create, update, delete, search, filter, and sort tasks.
+- **Kanban board:** organize tasks across **To Do**, **In Progress**, and **Completed** columns, including drag-and-drop status updates and mobile-friendly status selection.
+- **Project overview:** organize tasks within predefined projects and see project completion progress.
+- **Priorities and deadlines:** assign Low, Medium, or High priority; track due dates and overdue tasks.
+- **Personal dashboard:** see task counts, completion rate, project progress, and activity from the current session.
+- **Private workspace:** user-specific task data protected by Supabase authentication and Row Level Security (RLS).
+- **Admin analytics:** restricted `/admin` route with aggregate user/task metrics and recent registrations.
+- **Responsive design:** desktop and mobile layouts with a consistent UI system.
 
-## Demo
+## Screenshots
 
-You can view a fully working demo at [demo-nextjs-with-supabase.vercel.app](https://demo-nextjs-with-supabase.vercel.app/).
+### Dashboard
 
-## Deploy to Vercel
+A workspace overview with progress indicators, task statistics, and project summaries.
 
-Vercel deployment will guide you through creating a Supabase account and project.
+![TaskFlow dashboard showing progress and task statistics](docs/screenshots/dashboard.jpg)
 
-After installation of the Supabase integration, all relevant environment variables will be assigned to the project so the deployment is fully functioning.
+### Kanban Board
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&project-name=nextjs-with-supabase&repository-name=nextjs-with-supabase&demo-title=nextjs-with-supabase&demo-description=This+starter+configures+Supabase+Auth+to+use+cookies%2C+making+the+user%27s+session+available+throughout+the+entire+Next.js+app+-+Client+Components%2C+Server+Components%2C+Route+Handlers%2C+Server+Actions+and+Middleware.&demo-url=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2F&external-id=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&demo-image=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2Fopengraph-image.png)
+Move tasks between workflow stages and keep their status synchronized with Supabase.
 
-The above will also clone the Starter kit to your GitHub, you can clone that locally and develop locally.
+![TaskFlow Kanban board with To Do, In Progress, and Completed columns](docs/screenshots/kanban.jpg)
 
-If you wish to just develop locally and not deploy to Vercel, [follow the steps below](#clone-and-run-locally).
+### Projects & Task List
 
-## Clone and run locally
+| Project progress | Task filters and actions |
+|:---:|:---:|
+| ![TaskFlow project cards and progress indicators](docs/screenshots/projects.jpg) | ![TaskFlow task list with filters and edit actions](docs/screenshots/task-list.jpg) |
 
-1. You'll first need a Supabase project which can be made [via the Supabase dashboard](https://database.new)
+### Authentication & Administration
 
-2. Create a Next.js app using the Supabase Starter template npx command
+| Login | Protected admin analytics |
+|:---:|:---:|
+| ![TaskFlow login page](docs/screenshots/login.jpg) | ![TaskFlow administrator dashboard](docs/screenshots/admin.jpg) |
 
-   ```bash
-   npx create-next-app --example with-supabase with-supabase-app
-   ```
+*Email and account details in the screenshots have been obscured where appropriate for privacy. The landing-page board is an illustrative preview; authenticated task data is shown in the real dashboard and board.*
 
-   ```bash
-   yarn create next-app --example with-supabase with-supabase-app
-   ```
+## Tech Stack
 
-   ```bash
-   pnpm create next-app --example with-supabase with-supabase-app
-   ```
+| Layer | Technology |
+|---|---|
+| Frontend | Next.js App Router, React, TypeScript |
+| Styling | Tailwind CSS, CSS Modules, Lucide icons |
+| Authentication | Supabase Auth with `@supabase/ssr` |
+| Database | Supabase PostgreSQL with Row Level Security |
+| Hosting | Vercel |
 
-3. Use `cd` to change into the app's directory
+## Getting Started
 
-   ```bash
-   cd with-supabase-app
-   ```
+### 1. Clone and install
 
-4. Rename `.env.example` to `.env.local` and update the following:
+```bash
+git clone https://github.com/Bakhtiyor-dotcom/taskflow.git
+cd taskflow
+npm install
+```
 
-  ```env
-  NEXT_PUBLIC_SUPABASE_URL=[INSERT SUPABASE PROJECT URL]
-  NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=[INSERT SUPABASE PROJECT API PUBLISHABLE OR ANON KEY]
-  ```
-  > [!NOTE]
-  > This example uses `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, which refers to Supabase's new **publishable** key format.
-  > Both legacy **anon** keys and new **publishable** keys can be used with this variable name during the transition period. Supabase's dashboard may show `NEXT_PUBLIC_SUPABASE_ANON_KEY`; its value can be used in this example.
-  > See the [full announcement](https://github.com/orgs/supabase/discussions/29260) for more information.
+### 2. Configure Supabase
 
-  Both `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` can be found in [your Supabase project's API settings](https://supabase.com/dashboard/project/_?showConnect=true)
+Create a [Supabase](https://supabase.com/) project and copy the example environment file:
 
-5. You can now run the Next.js local development server:
+```bash
+cp .env.example .env.local
+```
 
-   ```bash
-   npm run dev
-   ```
+Edit `.env.local` with your own project settings:
 
-   The starter kit should now be running on [localhost:3000](http://localhost:3000/).
+```env
+NEXT_PUBLIC_SUPABASE_URL=your-supabase-project-url
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your-publishable-key
+```
 
-6. This template comes with the default shadcn/ui style initialized. If you instead want other ui.shadcn styles, delete `components.json` and [re-install shadcn/ui](https://ui.shadcn.com/docs/installation/next)
+> **Database setup:** this repository expects an existing Supabase schema for `public.tasks` with user-scoped RLS policies, plus `public.app_admins` for administrator access. The admin RPC is defined in [`supabase/admin_dashboard.sql`](supabase/admin_dashboard.sql), but the repo does not currently contain a complete one-command database migration. Configure the database before using task features. Never expose a Supabase service-role/secret key in client-side environment variables.
 
-> Check out [the docs for Local Development](https://supabase.com/docs/guides/getting-started/local-development) to also run Supabase locally.
+### 3. Run locally
 
-## Feedback and issues
+```bash
+npm run dev
+```
 
-Please file feedback and issues over on the [Supabase GitHub org](https://github.com/supabase/supabase/issues/new/choose).
+Open [http://localhost:3000](http://localhost:3000).
 
-## More Supabase examples
+### 4. Production check
 
-- [Next.js Subscription Payments Starter](https://github.com/vercel/nextjs-subscription-payments)
-- [Cookie-based Auth and the Next.js 13 App Router (free course)](https://youtube.com/playlist?list=PL5S4mPUpp4OtMhpnp93EFSo42iQ40XjbF)
-- [Supabase Auth and the Next.js App Router](https://github.com/supabase/supabase/tree/master/examples/auth/nextjs)
+```bash
+npm run build
+```
+
+## Security Notes
+
+- Private task queries are scoped to the signed-in user; database RLS enforces access boundaries.
+- Admin access is verified server-side using the `app_admins` table.
+- Aggregate administrator data comes from a database function that performs its own authorization check.
+- Only public Supabase environment variables should be prefixed with `NEXT_PUBLIC_`.
+
+## Project Background
+
+TaskFlow was built by extending the [Next.js + Supabase starter](https://github.com/vercel/next.js/tree/canary/examples/with-supabase) with a custom task-management experience, a redesigned interface, Kanban workflows, user-scoped persistence, and a restricted administration area.
+
+---
+
+<div align="center">
+
+**[View Live Demo](https://taskflow-bakhti.vercel.app/)** · **[Back to Top](#taskflow)**
+
+</div>
