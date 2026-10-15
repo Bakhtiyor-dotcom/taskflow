@@ -1,23 +1,22 @@
-TaskFlow — Auth Design Update
+TaskFlow — Mobile Dashboard Update
 
-Copy the contents of the folders in this archive into the same paths
-inside your existing taskflow project. Replace existing files when prompted.
+Included:
+  app/dashboard/page.tsx
 
-Changed/new files:
-  components/auth-shell.tsx      (new)
-  components/login-form.tsx      (replace)
-  components/sign-up-form.tsx    (replace)
-  app/auth/login/page.tsx        (replace)
-  app/auth/sign-up/page.tsx      (replace)
+Install on Mac (from a terminal):
+  cd ~/Projects/taskflow
+  unzip -o ~/Downloads/taskflow_mobile_update.zip -d .
 
-Then run:
+Note: This overwrites only app/dashboard/page.tsx.
+Do not replace app/page.tsx (the public landing page).
+
+Test locally:
   npm run dev
+  http://localhost:3000/dashboard
 
-Open:
-  http://localhost:3000/auth/login
-  http://localhost:3000/auth/sign-up
-
-When verified:
-  git add .
-  git commit -m "Redesign TaskFlow auth pages"
+After verifying the desktop and phone layout:
+  git add app/dashboard/page.tsx
+  git commit -m "Improve TaskFlow mobile dashboard"
   git push
+
+Vercel will deploy after the push.

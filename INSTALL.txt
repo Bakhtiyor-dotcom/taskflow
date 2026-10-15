@@ -1,0 +1,16 @@
+TaskFlow Premium Landing Page — install
+
+1. Download and unzip this archive.
+2. Copy app/page.tsx and app/landing.module.css to your existing ~/Projects/taskflow/app/ folder.
+   Keep all other files in your project unchanged.
+3. In VS Code's terminal:
+   cd ~/Projects/taskflow
+   npm run dev
+4. Open http://localhost:3000 and check desktop and mobile widths.
+5. To publish after verifying:
+   git add app/page.tsx app/landing.module.css
+   git commit -m "Redesign TaskFlow premium landing page"
+   git push
+
+Requires lucide-react, already installed in the user's project.
+No SQL, Supabase, authentication or Vercel environment changes necessary.

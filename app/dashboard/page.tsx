@@ -3,6 +3,13 @@
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { createBrowserClient } from "@supabase/ssr";
 import { useRouter } from "next/navigation";
+import {
+  Activity, ArrowRight, ArrowUpRight, CalendarDays, CheckCircle2,
+  ChevronRight, ClipboardList, Clock3, FolderKanban, LayoutDashboard,
+  LogOut, Menu, Plus, Search, ShieldCheck, SlidersHorizontal,
+  Sparkles, Target, Trash2, X, Pencil, AlertCircle,
+} from "lucide-react";
+import styles from "./dashboard.module.css";
 
 const supabase = createBrowserClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -260,10 +267,10 @@ export default function DashboardPage() {
   const completionRate = taskList.length ? Math.round((completed / taskList.length) * 100) : 0;
 
   const stats = [
-    { label: "Total Tasks", value: taskList.length, note: "Across all projects", icon: "▤", color: "bg-blue-50 text-blue-600" },
-    { label: "Completed", value: completed, note: `${completionRate}% completion rate`, icon: "✓", color: "bg-emerald-50 text-emerald-600" },
-    { label: "In Progress", value: inProgress, note: "Currently underway", icon: "◷", color: "bg-violet-50 text-violet-600" },
-    { label: "Overdue", value: overdue, note: "Needs attention", icon: "!", color: "bg-rose-50 text-rose-600" },
+    { label: "Total Tasks", value: taskList.length, note: "Across all projects", icon: ClipboardList, color: "bg-blue-50 text-blue-600", accent: "bg-blue-500" },
+    { label: "Completed", value: completed, note: `${completionRate}% completion rate`, icon: CheckCircle2, color: "bg-emerald-50 text-emerald-600", accent: "bg-emerald-500" },
+    { label: "In Progress", value: inProgress, note: "Currently underway", icon: Clock3, color: "bg-violet-50 text-violet-600", accent: "bg-violet-500" },
+    { label: "Overdue", value: overdue, note: "Needs attention", icon: AlertCircle, color: "bg-rose-50 text-rose-600", accent: "bg-rose-500" },
   ];
 
   const visibleTasks = useMemo(() => {
@@ -294,187 +301,283 @@ export default function DashboardPage() {
   }
 
   if (loading) {
-    return <div className="flex min-h-screen items-center justify-center bg-[#f7f8fc] text-slate-500">Loading your workspace...</div>;
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#f5f6fc]">
+        <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-6 py-5 text-sm font-medium text-slate-500 shadow-sm">
+          <span className="h-5 w-5 animate-spin rounded-full border-2 border-indigo-500 border-t-transparent" />
+          Loading your workspace...
+        </div>
+      </div>
+    );
   }
 
+  const firstName = email ? email.split("@")[0].split(/[._-]/)[0] : "there";
+  const upcomingTask = taskList
+    .filter((task) => task.status !== "Completed")
+    .slice()
+    .sort((a, b) => (a.date || "9999-12-31").localeCompare(b.date || "9999-12-31"))[0];
+  const navItems = [
+    { label: "Overview", href: "#dashboard", icon: LayoutDashboard, count: null },
+    { label: "My Tasks", href: "#tasks", icon: ClipboardList, count: taskList.length },
+    { label: "Projects", href: "#projects", icon: FolderKanban, count: null },
+    { label: "Activity", href: "#activity", icon: Activity, count: null },
+  ];
+
   return (
-    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#f7f8fc] text-slate-800 md:flex">
-      <aside className="relative z-20 flex w-full min-w-0 flex-col border-b border-slate-200 bg-white md:sticky md:top-0 md:h-screen md:w-64 md:shrink-0 md:border-b-0 md:border-r">
-        <div className="flex items-center justify-between gap-3 border-b border-slate-100 px-4 py-4 md:px-6 md:py-5">
-          <div className="flex min-w-0 items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-600 text-xl font-bold text-white shadow-lg shadow-indigo-200">T</div>
-            <div className="min-w-0"><h1 className="text-xl font-bold tracking-tight">TaskFlow</h1><p className="text-xs text-slate-400">Workspace Manager</p></div>
-          </div>
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#f5f6fc] text-slate-800 md:flex">
+      {/* Desktop sidebar and compact mobile navigation. */}
+      <aside className="relative z-30 w-full shrink-0 bg-[#10132b] text-white md:fixed md:inset-y-0 md:left-0 md:flex md:w-[250px] md:flex-col xl:w-[270px]">
+        <div className="flex items-center justify-between gap-3 border-b border-white/10 px-5 py-4 md:px-6 md:py-7">
+          <a href="/" className="flex min-w-0 items-center gap-3">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 text-xl font-extrabold shadow-lg shadow-indigo-900/50">T</div>
+            <div className="min-w-0">
+              <p className="text-xl font-extrabold tracking-tight">TaskFlow</p>
+              <p className="text-[11px] font-medium tracking-wide text-indigo-200/60">YOUR WORKSPACE</p>
+            </div>
+          </a>
           <button
             type="button"
+            onClick={() => setMobileMenuOpen((current) => !current)}
+            aria-label={mobileMenuOpen ? "Close navigation" : "Open navigation"}
             aria-expanded={mobileMenuOpen}
             aria-controls="taskflow-navigation"
-            aria-label={mobileMenuOpen ? "Close navigation" : "Open navigation"}
-            onClick={() => setMobileMenuOpen((open) => !open)}
-            className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-slate-200 text-xl text-slate-700 md:hidden"
+            className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/15 text-white md:hidden"
           >
-            {mobileMenuOpen ? "×" : "☰"}
+            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
-        <nav id="taskflow-navigation" className={`${mobileMenuOpen ? "flex" : "hidden"} flex-col gap-1 border-b border-slate-100 p-3 md:flex md:flex-1 md:border-b-0 md:p-4`}>
-          <p className="mb-2 hidden px-3 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 md:block">Workspace</p>
-          <a href="#dashboard" onClick={() => setMobileMenuOpen(false)} className="flex shrink-0 items-center gap-3 rounded-xl bg-indigo-50 px-3 py-3 text-sm font-semibold text-indigo-700"><span>▦</span> Overview</a>
-          <a href="#tasks" onClick={() => setMobileMenuOpen(false)} className="flex shrink-0 items-center gap-3 rounded-xl px-3 py-3 text-sm text-slate-500 transition hover:bg-slate-50 hover:text-slate-900"><span>☷</span> My Tasks <span className="ml-auto rounded-md bg-slate-100 px-2 py-0.5 text-xs">{taskList.length}</span></a>
-          <a href="#projects" onClick={() => setMobileMenuOpen(false)} className="flex shrink-0 items-center gap-3 rounded-xl px-3 py-3 text-sm text-slate-500 transition hover:bg-slate-50 hover:text-slate-900"><span>▣</span> Projects</a>
-          <a href="#activity" onClick={() => setMobileMenuOpen(false)} className="flex shrink-0 items-center gap-3 rounded-xl px-3 py-3 text-sm text-slate-500 transition hover:bg-slate-50 hover:text-slate-900"><span>◷</span> Activity</a>
-          <div className="mt-auto hidden rounded-2xl bg-gradient-to-br from-indigo-600 to-violet-600 p-4 text-white md:block">
-            <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl bg-white/20 text-lg">✦</div>
-            <p className="font-semibold">Stay productive</p>
-            <p className="mt-1 text-xs leading-5 text-indigo-100">Organize your work and make every day count.</p>
-            <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-white/20"><div className="h-full rounded-full bg-white" style={{ width: `${completionRate}%` }} /></div>
-            <p className="mt-2 text-xs text-indigo-100">{completionRate}% of tasks completed</p>
+
+        <nav id="taskflow-navigation" aria-label="Workspace navigation" className={`${mobileMenuOpen ? "flex" : "hidden"} flex-col gap-1 px-3 py-4 md:flex md:flex-1 md:px-4 md:py-6`}>
+          <p className="mb-3 hidden px-4 text-[10px] font-bold uppercase tracking-[0.24em] text-indigo-200/40 md:block">Workspace</p>
+          {navItems.map(({ label, href, icon: Icon, count }, index) => (
+            <a
+              href={href}
+              key={label}
+              onClick={() => setMobileMenuOpen(false)}
+              className={`flex min-h-12 items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition ${index === 0 ? "border border-indigo-400/20 bg-indigo-500/20 text-white" : "text-slate-400 hover:bg-white/10 hover:text-white"}`}
+            >
+              <Icon className={index === 0 ? "h-[18px] w-[18px] text-indigo-300" : "h-[18px] w-[18px]"} strokeWidth={1.9} />
+              <span>{label}</span>
+              {count !== null && <span className="ml-auto rounded-lg bg-white/10 px-2 py-0.5 text-xs text-indigo-100">{count}</span>}
+            </a>
+          ))}
+
+          <div className="mt-5 hidden rounded-2xl border border-indigo-400/20 bg-gradient-to-br from-indigo-500/20 via-violet-500/10 to-transparent p-4 md:block">
+            <div className="mb-4 flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-400/20"><Sparkles size={19} className="text-indigo-200" /></div>
+            <p className="text-sm font-semibold text-white">Keep your momentum</p>
+            <p className="mt-1 text-xs leading-5 text-indigo-100/60">Small steps add up to big wins.</p>
+            <div className="mt-5 flex items-end justify-between"><span className="text-2xl font-bold">{completionRate}%</span><span className="text-[11px] text-indigo-100/60">Completed</span></div>
+            <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/10"><div className="h-full rounded-full bg-gradient-to-r from-indigo-400 to-cyan-300 transition-all duration-700" style={{ width: `${completionRate}%` }} /></div>
           </div>
         </nav>
-        <div className="hidden items-center gap-3 border-t border-slate-100 p-4 md:flex">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-100 font-bold text-indigo-700">TF</div>
-          <div className="min-w-0"><p className="truncate text-sm font-semibold">TaskFlow User</p><p className="truncate text-xs text-slate-400" title={email}>{email || "Personal workspace"}</p></div>
+        <div className="hidden items-center gap-3 border-t border-white/10 px-5 py-5 md:flex">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-indigo-600 text-sm font-bold text-white">{(firstName[0] || "T").toUpperCase()}</div>
+          <div className="min-w-0">
+            <p className="truncate text-sm font-semibold capitalize text-white">{firstName}</p>
+            <p className="truncate text-xs text-indigo-100/50" title={email}>{email || "Personal workspace"}</p>
+          </div>
+          <button onClick={logOut} type="button" aria-label="Log out" title="Log out" className="ml-auto rounded-lg p-2 text-indigo-100/60 transition hover:bg-white/10 hover:text-white"><LogOut size={17} /></button>
         </div>
       </aside>
 
-      <main id="dashboard" className="w-full min-w-0 flex-1 overflow-hidden">
-        <header className="flex min-w-0 items-center justify-between gap-3 border-b border-slate-200/80 bg-white px-4 py-3 sm:px-8 sm:py-4">
-          <div className="min-w-0"><p className="hidden text-xs text-slate-400 sm:block">Workspace / Overview</p><h2 className="text-lg font-bold sm:mt-1">Dashboard</h2></div>
-          <button type="button" onClick={logOut} className="shrink-0 rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50">Log out</button>
+      <main id="dashboard" className="w-full min-w-0 flex-1 scroll-mt-0 md:ml-[250px] xl:ml-[270px]">
+        <header className="flex min-w-0 items-center justify-between gap-4 border-b border-slate-200/70 bg-white/80 px-4 py-4 backdrop-blur-xl sm:px-8 lg:px-10">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.17em] text-slate-400">Workspace <span className="mx-2 text-slate-300">/</span> Overview</p>
+            <h1 className="mt-1 text-lg font-bold tracking-tight text-slate-900">Dashboard</h1>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="hidden items-center gap-2 rounded-full border border-emerald-100 bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-700 sm:inline-flex"><span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />Private workspace</span>
+            <button type="button" onClick={logOut} className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-semibold text-slate-600 shadow-sm transition hover:border-indigo-200 hover:text-indigo-600 sm:text-sm"><LogOut size={15} /> Log out</button>
+          </div>
         </header>
 
-        <div className="mx-auto w-full max-w-[1400px] min-w-0 space-y-6 px-4 py-6 sm:space-y-8 sm:p-8">
-          <section className="flex min-w-0 flex-col justify-between gap-4 sm:flex-row sm:items-end">
-            <div className="min-w-0">
-              <p className="text-xs font-medium text-indigo-600 sm:text-sm">{todayLabel}</p>
-              <h2 className="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Your workspace</h2>
-              <p className="mt-2 text-sm leading-6 text-slate-500">Manage tasks and track progress across your projects.</p>
+        <div className="mx-auto w-full max-w-[1500px] min-w-0 space-y-6 px-4 py-6 sm:space-y-7 sm:px-8 sm:py-8 lg:px-10">
+          {/* High-impact, responsive hero card. */}
+          <section className={`relative isolate overflow-hidden rounded-[28px] bg-[#15183b] px-6 py-8 text-white shadow-[0_22px_70px_-26px_rgba(48,42,131,0.6)] sm:px-9 sm:py-10 lg:px-11 ${styles.enter}`}>
+            <div className="pointer-events-none absolute -right-16 -top-32 h-80 w-80 rounded-full bg-indigo-500/40 blur-[85px]" />
+            <div className={`pointer-events-none absolute -bottom-36 right-1/4 h-72 w-72 rounded-full bg-fuchsia-500/20 blur-[78px] ${styles.float}`} />
+            <div className="pointer-events-none absolute inset-0 opacity-30 [background-image:radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.18)_1px,transparent_0)] [background-size:22px_22px]" />
+            <div className="relative z-10 grid items-center gap-7 lg:grid-cols-[minmax(0,1fr)_250px]">
+              <div className="min-w-0">
+                <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-indigo-100 backdrop-blur-sm"><Sparkles size={13} /> Your productivity hub</span>
+                <p className="mt-5 text-sm font-medium text-indigo-200">{todayLabel}</p>
+                <h2 className="mt-2 max-w-2xl text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl lg:text-[42px]">Stay focused. <span className="text-indigo-300">Make progress.</span></h2>
+                <p className="mt-3 max-w-xl text-sm leading-6 text-indigo-100/70 sm:text-base">Welcome back, <span className="font-semibold capitalize text-white">{firstName}</span>. Keep your projects moving, one task at a time.</p>
+                <button onClick={openCreate} type="button" className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-white px-5 py-3.5 text-sm font-bold text-indigo-700 shadow-lg shadow-indigo-950/30 transition hover:-translate-y-0.5 hover:bg-indigo-50 sm:w-auto"><Plus size={18} strokeWidth={2.5} /> Create new task <ArrowRight size={16} /></button>
+              </div>
+              <div className="relative rounded-2xl border border-white/15 bg-white/10 p-5 backdrop-blur-md sm:max-w-[300px] lg:max-w-none">
+                <div className="flex items-center gap-4">
+                  <div className="relative flex h-20 w-20 shrink-0 items-center justify-center rounded-full" style={{ background: `conic-gradient(#a5b4fc ${completionRate}%, rgba(255,255,255,.12) ${completionRate}% 100%)` }}>
+                    <div className="flex h-[65px] w-[65px] items-center justify-center rounded-full bg-[#25274c] text-lg font-extrabold">{completionRate}%</div>
+                  </div>
+                  <div><p className="text-sm font-semibold">Your progress</p><p className="mt-1 text-xs leading-5 text-indigo-100/65">{completed} of {taskList.length} tasks done</p></div>
+                </div>
+                <div className="mt-5 border-t border-white/10 pt-4">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-indigo-200/70">Next in focus</p>
+                  <p className="mt-2 line-clamp-2 text-sm font-semibold text-white">{upcomingTask?.title || "Your next win starts here"}</p>
+                  <p className="mt-1 text-xs text-indigo-100/60">{upcomingTask ? `${upcomingTask.project} · ${formatDate(upcomingTask.date)}` : "Add a task to get started"}</p>
+                </div>
+              </div>
             </div>
-            <button type="button" onClick={openCreate} className="w-full shrink-0 rounded-xl bg-indigo-600 px-5 py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-200 transition hover:bg-indigo-700 sm:w-auto sm:py-3">+ New Task</button>
           </section>
 
           {(error || saving) && (
-            <div role={error ? "alert" : "status"} className={`rounded-xl border px-4 py-3 text-sm ${error ? "border-rose-200 bg-rose-50 text-rose-700" : "border-indigo-100 bg-indigo-50 text-indigo-700"}`}>
+            <div role={error ? "alert" : "status"} className={`rounded-2xl border px-4 py-3 text-sm ${error ? "border-rose-200 bg-rose-50 text-rose-700" : "border-indigo-100 bg-indigo-50 text-indigo-700"}`}>
               {error || "Saving changes to Supabase..."}
             </div>
           )}
 
-          <section className="grid min-w-0 grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
-            {stats.map((stat) => (
-              <div key={stat.label} className="min-w-0 rounded-2xl border border-slate-200/80 bg-white p-3.5 shadow-sm transition hover:shadow-md sm:p-5">
-                <div className="flex min-w-0 items-start justify-between gap-1"><p className="min-w-0 text-xs font-medium leading-5 text-slate-500 sm:text-sm">{stat.label}</p><span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-base font-bold sm:h-10 sm:w-10 sm:rounded-xl sm:text-lg ${stat.color}`}>{stat.icon}</span></div>
-                <p className="mt-3 text-2xl font-bold tracking-tight text-slate-900 sm:mt-4 sm:text-3xl">{stat.value}</p>
-                <p className="mt-1 hidden text-xs text-slate-400 sm:mt-2 sm:block">{stat.note}</p>
+          {/* Statistics use live task data; no decorative fake numbers. */}
+          <section aria-label="Task statistics" className={`grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4 ${styles.enterDelayed}`}>
+            {stats.map(({ label, value, note, icon: Icon, color, accent }) => (
+              <div key={label} className="group relative min-w-0 overflow-hidden rounded-[22px] border border-slate-200/80 bg-white p-4 shadow-[0_10px_30px_-20px_rgba(14,24,60,.2)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_-20px_rgba(14,24,60,.25)] sm:p-5">
+                <div className={`absolute left-0 top-0 h-1 w-full ${accent}`} />
+                <div className="flex items-start justify-between gap-2">
+                  <p className="min-w-0 text-xs font-semibold text-slate-500 sm:text-sm">{label}</p>
+                  <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl sm:h-11 sm:w-11 ${color}`}><Icon size={20} strokeWidth={2} /></div>
+                </div>
+                <p className="mt-4 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-[36px]">{value}</p>
+                <p className="mt-1 hidden text-xs text-slate-400 sm:block">{note}</p>
               </div>
             ))}
           </section>
 
-          <section id="projects" className="min-w-0 scroll-mt-5 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm sm:p-6">
+          <section id="projects" className="min-w-0 scroll-mt-6 overflow-hidden rounded-[24px] border border-slate-200/80 bg-white p-4 shadow-sm sm:p-6">
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <div><h3 className="text-lg font-bold text-slate-900">Your Projects</h3><p className="mt-1 text-sm text-slate-500">Click a project to view its tasks.</p></div>
-              <button type="button" onClick={() => { setProjectFilter("All"); document.getElementById("tasks")?.scrollIntoView({ behavior: "smooth" }); }} className="text-sm font-semibold text-indigo-600 hover:text-indigo-800">View all →</button>
+              <div><div className="flex items-center gap-2"><FolderKanban size={20} className="text-indigo-600" /><h3 className="text-xl font-bold tracking-tight text-slate-900">Your projects</h3></div><p className="mt-1.5 text-sm text-slate-500">A quick view of everything you&apos;re working on.</p></div>
+              <button type="button" onClick={() => { setProjectFilter("All"); document.getElementById("tasks")?.scrollIntoView({ behavior: "smooth" }); }} className="inline-flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-semibold text-indigo-600 transition hover:bg-indigo-50">View all <ArrowUpRight size={16} /></button>
             </div>
-            <div className="mt-5 grid min-w-0 grid-cols-2 gap-3 sm:mt-6 sm:gap-4 xl:grid-cols-4">
-              {PROJECTS.map((project) => {
+            <div className="mt-5 grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
+              {PROJECTS.map((project, index) => {
                 const tasks = taskList.filter((task) => task.project === project.name);
                 const done = tasks.filter((task) => task.status === "Completed").length;
                 const progress = tasks.length ? Math.round((done / tasks.length) * 100) : 0;
+                const gradients = ["from-violet-500 to-fuchsia-500", "from-blue-500 to-cyan-500", "from-emerald-500 to-teal-500", "from-amber-500 to-orange-500"];
                 return (
-                  <button key={project.name} type="button" onClick={() => { setProjectFilter(project.name); document.getElementById("tasks")?.scrollIntoView({ behavior: "smooth" }); }} className={`min-w-0 rounded-xl border p-3 text-left transition hover:shadow-sm sm:p-4 ${projectFilter === project.name ? "border-indigo-400 ring-2 ring-indigo-100" : "border-slate-200 hover:border-indigo-200"}`}>
-                    <div className="flex min-w-0 items-start justify-between gap-2"><div className={`h-9 w-9 shrink-0 rounded-xl sm:h-10 sm:w-10 ${project.color}`} /><span className={`min-w-0 truncate rounded-lg px-1.5 py-1 text-[10px] sm:px-2.5 sm:text-xs ${project.tint}`}>{project.category}</span></div>
-                    <h4 className="mt-3 min-h-[2.5rem] break-words text-sm font-semibold leading-5 text-slate-800 sm:mt-4 sm:min-h-0 sm:text-base">{project.name}</h4>
-                    <div className="mt-3 flex min-w-0 flex-wrap items-center justify-between gap-1 text-[11px] sm:mt-4 sm:text-xs"><span className="text-slate-400">{done} of {tasks.length} done</span><span className="font-bold text-slate-700">{progress}%</span></div>
-                    <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-100"><div className={`h-full rounded-full ${project.color}`} style={{ width: `${progress}%` }} /></div>
+                  <button key={project.name} type="button" onClick={() => { setProjectFilter(project.name); document.getElementById("tasks")?.scrollIntoView({ behavior: "smooth" }); }} className={`group min-w-0 rounded-2xl border p-3.5 text-left transition duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-indigo-100/40 sm:p-5 ${projectFilter === project.name ? "border-indigo-400 bg-indigo-50/40 ring-2 ring-indigo-100" : "border-slate-200 bg-slate-50/40 hover:border-indigo-200 hover:bg-white"}`}>
+                    <div className="flex items-center justify-between gap-1">
+                      <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${gradients[index]} text-white shadow-sm`}><FolderKanban size={19} /></span>
+                      <ChevronRight size={17} className="text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-indigo-600" />
+                    </div>
+                    <h4 className="mt-4 min-h-[2.5rem] break-words text-sm font-bold leading-5 text-slate-900 sm:min-h-0 sm:text-base">{project.name}</h4>
+                    <p className="mt-1 text-xs text-slate-500">{tasks.length} {tasks.length === 1 ? "task" : "tasks"}</p>
+                    <div className="mt-4 flex items-center justify-between gap-2 text-[11px] sm:text-xs"><span className="text-slate-500">Progress</span><span className="font-bold text-slate-700">{progress}%</span></div>
+                    <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-200/70"><div className={`h-full rounded-full transition-all duration-700 ${project.color}`} style={{ width: `${progress}%` }} /></div>
                   </button>
                 );
               })}
             </div>
           </section>
 
-          <section id="tasks" className="min-w-0 scroll-mt-5 overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm">
-            <div className="flex min-w-0 flex-wrap items-center justify-between gap-3 p-4 sm:p-6">
-              <div className="min-w-0"><h3 className="text-lg font-bold text-slate-900">My Tasks</h3><p className="mt-1 text-xs text-slate-500 sm:text-sm">{visibleTasks.length} of {taskList.length} tasks shown. Tap a status to change it.</p></div>
+          <section id="tasks" className="min-w-0 scroll-mt-6 overflow-hidden rounded-[24px] border border-slate-200/80 bg-white shadow-sm">
+            <div className="flex flex-wrap items-start justify-between gap-3 px-4 pb-4 pt-5 sm:px-6 sm:pt-6">
+              <div><div className="flex items-center gap-2"><Target size={20} className="text-indigo-600" /><h3 className="text-xl font-bold tracking-tight text-slate-900">My tasks</h3></div><p className="mt-1.5 text-xs text-slate-500 sm:text-sm">{visibleTasks.length} of {taskList.length} tasks shown. Tap a status to change it.</p></div>
               <div className="flex flex-wrap items-center gap-2">
-                <button type="button" aria-expanded={mobileFiltersOpen} onClick={() => setMobileFiltersOpen((open) => !open)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-600 md:hidden">{mobileFiltersOpen ? "Hide filters" : "Filters"}</button>
-                <button type="button" onClick={clearFilters} className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50">Clear filters</button>
+                <button type="button" onClick={openCreate} className="inline-flex items-center gap-1.5 rounded-xl bg-indigo-600 px-3.5 py-2.5 text-xs font-semibold text-white transition hover:bg-indigo-700 sm:text-sm"><Plus size={16} /> New task</button>
               </div>
             </div>
-            <div className="grid min-w-0 gap-3 border-t border-slate-100 p-4 sm:grid-cols-2 sm:p-6 xl:grid-cols-5">
-              <input aria-label="Search tasks" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search tasks..." className="w-full min-w-0 rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-indigo-400 xl:col-span-1" />
-              <select aria-label="Filter status" value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)} className={`${mobileFiltersOpen ? "block" : "hidden"} w-full min-w-0 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm md:block`}><option value="All">All statuses</option><option>To Do</option><option>In Progress</option><option>Completed</option></select>
-              <select aria-label="Filter priority" value={priorityFilter} onChange={(event) => setPriorityFilter(event.target.value)} className={`${mobileFiltersOpen ? "block" : "hidden"} w-full min-w-0 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm md:block`}><option value="All">All priorities</option><option>High</option><option>Medium</option><option>Low</option></select>
-              <select aria-label="Filter project" value={projectFilter} onChange={(event) => setProjectFilter(event.target.value)} className={`${mobileFiltersOpen ? "block" : "hidden"} w-full min-w-0 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm md:block`}><option value="All">All projects</option>{PROJECTS.map((project) => <option key={project.name}>{project.name}</option>)}</select>
-              <select aria-label="Sort tasks" value={sortBy} onChange={(event) => setSortBy(event.target.value)} className={`${mobileFiltersOpen ? "block" : "hidden"} w-full min-w-0 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm md:block`}><option value="newest">Newest first</option><option value="oldest">Oldest first</option><option value="due">Due date</option><option value="priority">Priority</option></select>
+            <div className="flex gap-2 overflow-x-auto px-4 pb-4 sm:px-6">
+              {[{ label: "All tasks", value: "All" }, { label: "In progress", value: "In Progress" }, { label: "Completed", value: "Completed" }, { label: "To do", value: "To Do" }].map((tab) => (
+                <button type="button" key={tab.value} onClick={() => setStatusFilter(tab.value)} className={`shrink-0 rounded-full px-3.5 py-2 text-xs font-semibold transition sm:text-sm ${statusFilter === tab.value ? "bg-indigo-600 text-white shadow-sm shadow-indigo-200" : "bg-slate-100 text-slate-500 hover:bg-indigo-50 hover:text-indigo-700"}`}>{tab.label}</button>
+              ))}
             </div>
-            {/* On narrow screens, task cards replace the wide desktop table. */}
+            <div className="grid min-w-0 gap-3 border-t border-slate-100 bg-slate-50/30 p-4 sm:grid-cols-2 sm:p-5 xl:grid-cols-[1.4fr_repeat(4,minmax(0,1fr))]">
+              <label className="relative block min-w-0">
+                <Search size={17} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input aria-label="Search tasks" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search tasks..." className="w-full min-w-0 rounded-xl border border-slate-200 bg-white py-3 pl-10 pr-3 text-sm outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-50" />
+              </label>
+              <button type="button" aria-expanded={mobileFiltersOpen} onClick={() => setMobileFiltersOpen((open) => !open)} className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm font-semibold text-slate-600 sm:justify-start md:hidden"><SlidersHorizontal size={16} /> {mobileFiltersOpen ? "Hide filters" : "More filters"}</button>
+              <select aria-label="Filter priority" value={priorityFilter} onChange={(event) => setPriorityFilter(event.target.value)} className={`${mobileFiltersOpen ? "block" : "hidden"} min-w-0 rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm outline-none focus:border-indigo-400 md:block`}><option value="All">All priorities</option><option>High</option><option>Medium</option><option>Low</option></select>
+              <select aria-label="Filter project" value={projectFilter} onChange={(event) => setProjectFilter(event.target.value)} className={`${mobileFiltersOpen ? "block" : "hidden"} min-w-0 rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm outline-none focus:border-indigo-400 md:block`}><option value="All">All projects</option>{PROJECTS.map((project) => <option key={project.name}>{project.name}</option>)}</select>
+              <select aria-label="Sort tasks" value={sortBy} onChange={(event) => setSortBy(event.target.value)} className={`${mobileFiltersOpen ? "block" : "hidden"} min-w-0 rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm outline-none focus:border-indigo-400 md:block`}><option value="newest">Newest first</option><option value="oldest">Oldest first</option><option value="due">Due date</option><option value="priority">Priority</option></select>
+              <button type="button" onClick={clearFilters} className={`${mobileFiltersOpen ? "inline-flex" : "hidden"} items-center justify-center rounded-xl border border-slate-200 bg-white px-3 py-3 text-xs font-semibold text-slate-500 transition hover:text-indigo-600 md:inline-flex`}>Clear filters</button>
+            </div>
+
+            {/* Mobile-first task cards. Desktop gets a full table. */}
             <div className="divide-y divide-slate-100 md:hidden">
               {visibleTasks.map((task) => (
-                <article key={task.id} className="min-w-0 space-y-3 p-4">
-                  <div className="flex min-w-0 items-start justify-between gap-3">
-                    <div className="min-w-0 flex-1">
-                      <h4 className="break-words text-sm font-semibold text-slate-800">{task.title}</h4>
-                      <p className="mt-1 text-xs text-slate-400">{task.project}</p>
-                    </div>
-                    <span className={`shrink-0 rounded-lg px-2.5 py-1.5 text-xs font-medium ${PRIORITY_COLORS[task.priority]}`}>{task.priority}</span>
+                <article key={task.id} className="space-y-3 p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0 flex-1"><h4 className="break-words text-sm font-bold text-slate-900">{task.title}</h4><p className="mt-1 text-xs text-slate-400">{task.project}</p></div>
+                    <span className={`shrink-0 rounded-lg px-2.5 py-1.5 text-[11px] font-semibold ${PRIORITY_COLORS[task.priority]}`}>{task.priority}</span>
                   </div>
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <button type="button" title="Tap to change status" disabled={saving} onClick={() => cycleStatus(task)} className={`rounded-lg px-3 py-2 text-xs font-semibold ${STATUS_COLORS[task.status]}`}>{task.status} ↻</button>
-                    <span className={`text-xs ${task.date && task.date < today && task.status !== "Completed" ? "font-semibold text-rose-600" : "text-slate-500"}`}>{formatDate(task.date)}</span>
-                  </div>
-                  <div className="flex gap-2 border-t border-slate-100 pt-3">
-                    <button type="button" disabled={saving} onClick={() => openEdit(task)} className="min-h-10 flex-1 rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700">Edit</button>
-                    <button type="button" disabled={saving} onClick={() => deleteTask(task)} className="min-h-10 flex-1 rounded-lg border border-rose-100 px-3 py-2 text-sm font-semibold text-rose-600">Delete</button>
-                  </div>
+                  <div className="flex flex-wrap items-center justify-between gap-2"><button type="button" title="Tap to change status" disabled={saving} onClick={() => cycleStatus(task)} className={`rounded-lg px-3 py-2 text-xs font-semibold transition hover:opacity-80 ${STATUS_COLORS[task.status]}`}>{task.status} ↻</button><span className={`flex items-center gap-1 text-xs ${task.date && task.date < today && task.status !== "Completed" ? "font-semibold text-rose-600" : "text-slate-500"}`}><CalendarDays size={13} /> {formatDate(task.date)}</span></div>
+                  <div className="flex gap-2 border-t border-slate-100 pt-3"><button type="button" disabled={saving} onClick={() => openEdit(task)} className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700"><Pencil size={14} /> Edit</button><button type="button" disabled={saving} onClick={() => deleteTask(task)} className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl border border-rose-100 text-xs font-semibold text-rose-600"><Trash2 size={14} /> Delete</button></div>
                 </article>
               ))}
-              {visibleTasks.length === 0 && <p className="px-4 py-10 text-center text-sm text-slate-400">No tasks found. Clear filters or create a task.</p>}
+              {visibleTasks.length === 0 && <EmptyTasks onAdd={openCreate} hasTasks={taskList.length > 0} />}
             </div>
+
             <div className="hidden overflow-x-auto md:block">
               <table className="w-full min-w-[760px] text-left text-sm">
-                <thead className="border-y border-slate-100 bg-slate-50/70 text-xs text-slate-400"><tr><th className="px-6 py-4 font-medium">Task name</th><th className="px-6 py-4 font-medium">Priority</th><th className="px-6 py-4 font-medium">Status</th><th className="px-6 py-4 font-medium">Due date</th><th className="px-6 py-4 text-right font-medium">Actions</th></tr></thead>
+                <thead className="border-y border-slate-100 bg-slate-50/60 text-xs text-slate-400"><tr><th className="px-6 py-4 font-semibold">Task name</th><th className="px-5 py-4 font-semibold">Priority</th><th className="px-5 py-4 font-semibold">Status</th><th className="px-5 py-4 font-semibold">Due date</th><th className="px-6 py-4 text-right font-semibold">Actions</th></tr></thead>
                 <tbody className="divide-y divide-slate-100">
                   {visibleTasks.map((task) => (
-                    <tr key={task.id} className="transition hover:bg-slate-50/70">
-                      <td className="px-6 py-4"><p className="font-semibold text-slate-800">{task.title}</p><p className="mt-1 text-xs text-slate-400">{task.project}</p></td>
-                      <td className="px-6 py-4"><span className={`rounded-lg px-2.5 py-1.5 text-xs font-medium ${PRIORITY_COLORS[task.priority]}`}>{task.priority}</span></td>
-                      <td className="px-6 py-4"><button type="button" title="Click to change status" disabled={saving} onClick={() => cycleStatus(task)} className={`rounded-lg px-2.5 py-1.5 text-xs font-medium transition hover:opacity-75 ${STATUS_COLORS[task.status]}`}>{task.status}</button></td>
-                      <td className={`px-6 py-4 ${task.date && task.date < today && task.status !== "Completed" ? "font-semibold text-rose-600" : "text-slate-500"}`}>{formatDate(task.date)}</td>
-                      <td className="px-6 py-4"><div className="flex justify-end gap-2"><button type="button" disabled={saving} onClick={() => openEdit(task)} className="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-100">Edit</button><button type="button" disabled={saving} onClick={() => deleteTask(task)} className="rounded-lg border border-rose-100 px-3 py-1.5 text-xs font-semibold text-rose-600 hover:bg-rose-50">Delete</button></div></td>
+                    <tr key={task.id} className="transition hover:bg-indigo-50/30">
+                      <td className="px-6 py-4"><p className="font-bold text-slate-800">{task.title}</p><p className="mt-1 text-xs text-slate-400">{task.project}</p></td>
+                      <td className="px-5 py-4"><span className={`rounded-lg px-2.5 py-1.5 text-xs font-semibold ${PRIORITY_COLORS[task.priority]}`}>{task.priority}</span></td>
+                      <td className="px-5 py-4"><button type="button" title="Click to change status" disabled={saving} onClick={() => cycleStatus(task)} className={`rounded-lg px-2.5 py-1.5 text-xs font-semibold transition hover:opacity-80 ${STATUS_COLORS[task.status]}`}>{task.status}</button></td>
+                      <td className={`px-5 py-4 text-xs ${task.date && task.date < today && task.status !== "Completed" ? "font-semibold text-rose-600" : "text-slate-500"}`}>{formatDate(task.date)}</td>
+                      <td className="px-6 py-4"><div className="flex justify-end gap-2"><button type="button" disabled={saving} onClick={() => openEdit(task)} className="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-600 hover:bg-white"><Pencil size={13} /> Edit</button><button type="button" disabled={saving} onClick={() => deleteTask(task)} className="inline-flex items-center gap-1 rounded-lg border border-rose-100 px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50"><Trash2 size={13} /> Delete</button></div></td>
                     </tr>
                   ))}
-                  {visibleTasks.length === 0 && <tr><td colSpan={5} className="px-6 py-12 text-center text-sm text-slate-400">No tasks found. Try clearing filters or create a new task.</td></tr>}
+                  {visibleTasks.length === 0 && <tr><td colSpan={5} className="px-6 py-10"><EmptyTasks onAdd={openCreate} hasTasks={taskList.length > 0} /></td></tr>}
                 </tbody>
               </table>
             </div>
-            <div className="flex flex-col items-start justify-between gap-3 border-t border-slate-100 px-4 py-4 sm:flex-row sm:items-center sm:px-6"><span className="text-xs text-slate-400">Changes are saved securely in Supabase.</span><button type="button" onClick={openCreate} className="text-sm font-semibold text-indigo-600 hover:text-indigo-800">+ Add another task →</button></div>
+            <div className="flex flex-col items-start justify-between gap-3 border-t border-slate-100 px-4 py-4 sm:flex-row sm:items-center sm:px-6"><span className="inline-flex items-center gap-2 text-xs text-slate-400"><ShieldCheck size={14} className="text-emerald-500" /> Your tasks are saved securely in Supabase.</span><button type="button" onClick={openCreate} className="inline-flex items-center gap-1.5 text-sm font-bold text-indigo-600 hover:text-indigo-800"><Plus size={16} /> Add another task <ArrowRight size={15} /></button></div>
           </section>
 
-          <section id="activity" className="min-w-0 scroll-mt-5 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm sm:p-6">
-            <h3 className="text-lg font-bold text-slate-900">Recent Activity</h3>
-            <p className="mt-1 text-sm text-slate-500">Actions from this session.</p>
-            {activity.length ? <ul className="mt-4 divide-y divide-slate-100">{activity.map((item) => <li key={item.id} className="flex min-w-0 flex-wrap items-center justify-between gap-2 py-3 text-sm"><span>{item.message}</span><span className="shrink-0 text-xs text-slate-400">{item.time}</span></li>)}</ul> : <p className="mt-4 rounded-xl bg-slate-50 p-4 text-sm text-slate-400">Your activity will appear here after you add, edit, delete, or update a task.</p>}
+          <section id="activity" className="min-w-0 scroll-mt-6 overflow-hidden rounded-[24px] border border-slate-200/80 bg-white p-5 shadow-sm sm:p-6">
+            <div className="flex items-center gap-2"><Activity size={20} className="text-indigo-600" /><h3 className="text-xl font-bold tracking-tight text-slate-900">Recent activity</h3></div>
+            <p className="mt-1.5 text-sm text-slate-500">Actions from your current session.</p>
+            {activity.length ? (
+              <ul className="mt-5 divide-y divide-slate-100">
+                {activity.map((item) => (
+                  <li key={item.id} className="flex flex-wrap items-start justify-between gap-3 py-3.5 text-sm">
+                    <span className="flex min-w-0 items-start gap-3"><span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-indigo-500" /><span>{item.message}</span></span>
+                    <span className="shrink-0 pl-5 text-xs text-slate-400">{item.time}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className="mt-5 flex items-start gap-3 rounded-2xl border border-dashed border-slate-200 bg-slate-50/60 p-5"><div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600"><Activity size={19} /></div><p className="pt-1 text-sm leading-6 text-slate-500">Your latest activity will appear here after you create, edit, or complete a task.</p></div>
+            )}
           </section>
-          <footer className="pb-2 text-center text-xs text-slate-400">TaskFlow · Project management made simple</footer>
+          <footer className="pb-4 text-center text-xs text-slate-400">TaskFlow · A calmer way to get things done.</footer>
         </div>
       </main>
 
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center bg-slate-900/50 p-0 sm:items-center sm:p-4" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setModalOpen(false); }}>
-          <div role="dialog" aria-modal="true" aria-labelledby="task-dialog-title" className="max-h-[94dvh] w-full max-w-lg overflow-y-auto overscroll-contain rounded-t-3xl bg-white p-5 pb-8 shadow-2xl sm:max-h-[90vh] sm:rounded-2xl sm:p-8">
-            <div className="mb-6 flex items-center justify-between gap-3"><div><h2 id="task-dialog-title" className="text-xl font-bold text-slate-900">{editingId ? "Edit task" : "Create new task"}</h2><p className="mt-1 text-sm text-slate-500">Set the details of your task.</p></div><button type="button" aria-label="Close dialog" onClick={() => setModalOpen(false)} className="rounded-lg px-2 py-1 text-2xl text-slate-400 hover:bg-slate-100">×</button></div>
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-slate-950/65 p-0 backdrop-blur-[3px] sm:items-center sm:p-4" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget && !saving) setModalOpen(false); }}>
+          <div role="dialog" aria-modal="true" aria-labelledby="task-dialog-title" className="max-h-[94dvh] w-full max-w-lg overflow-y-auto overscroll-contain rounded-t-[28px] bg-white p-5 pb-8 shadow-2xl sm:max-h-[90vh] sm:rounded-[24px] sm:p-8">
+            <div className="mb-6 flex items-start justify-between gap-3"><div><span className="text-[11px] font-bold uppercase tracking-[0.18em] text-indigo-500">Task details</span><h2 id="task-dialog-title" className="mt-1 text-2xl font-extrabold tracking-tight text-slate-900">{editingId ? "Edit task" : "Create new task"}</h2><p className="mt-1 text-sm text-slate-500">Give your next win a name.</p></div><button type="button" aria-label="Close dialog" disabled={saving} onClick={() => setModalOpen(false)} className="rounded-xl p-2 text-slate-400 hover:bg-slate-100"><X size={20} /></button></div>
             {error && <p role="alert" className="mb-4 rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700">{error}</p>}
             <form onSubmit={saveTask} className="space-y-4">
-              <label className="block text-sm font-semibold text-slate-700">Task name<input autoFocus required maxLength={120} value={form.title} onChange={(event) => setForm({ ...form, title: event.target.value })} placeholder="What needs to be done?" className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-3 font-normal outline-none focus:border-indigo-500" /></label>
+              <label className="block text-sm font-semibold text-slate-700">Task name<input autoFocus required maxLength={120} value={form.title} onChange={(event) => setForm({ ...form, title: event.target.value })} placeholder="What needs to be done?" className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3.5 font-normal outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50" /></label>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <label className="block text-sm font-semibold text-slate-700">Project<select value={form.project} onChange={(event) => setForm({ ...form, project: event.target.value })} className="mt-2 w-full min-w-0 rounded-xl border border-slate-200 bg-white px-3 py-3 font-normal">{PROJECTS.map((project) => <option key={project.name}>{project.name}</option>)}</select></label>
-                <label className="block text-sm font-semibold text-slate-700">Priority<select value={form.priority} onChange={(event) => setForm({ ...form, priority: event.target.value as Priority })} className="mt-2 w-full min-w-0 rounded-xl border border-slate-200 bg-white px-3 py-3 font-normal"><option>Low</option><option>Medium</option><option>High</option></select></label>
-                <label className="block text-sm font-semibold text-slate-700">Status<select value={form.status} onChange={(event) => setForm({ ...form, status: event.target.value as Status })} className="mt-2 w-full min-w-0 rounded-xl border border-slate-200 bg-white px-3 py-3 font-normal"><option>To Do</option><option>In Progress</option><option>Completed</option></select></label>
-                <label className="block text-sm font-semibold text-slate-700">Due date<input type="date" value={form.date} onChange={(event) => setForm({ ...form, date: event.target.value })} className="mt-2 w-full min-w-0 rounded-xl border border-slate-200 bg-white px-3 py-3 font-normal" /></label>
+                <label className="block text-sm font-semibold text-slate-700">Project<select value={form.project} onChange={(event) => setForm({ ...form, project: event.target.value })} className="mt-2 w-full min-w-0 rounded-xl border border-slate-200 bg-white px-3 py-3.5 font-normal focus:border-indigo-500">{PROJECTS.map((project) => <option key={project.name}>{project.name}</option>)}</select></label>
+                <label className="block text-sm font-semibold text-slate-700">Priority<select value={form.priority} onChange={(event) => setForm({ ...form, priority: event.target.value as Priority })} className="mt-2 w-full min-w-0 rounded-xl border border-slate-200 bg-white px-3 py-3.5 font-normal focus:border-indigo-500"><option>Low</option><option>Medium</option><option>High</option></select></label>
+                <label className="block text-sm font-semibold text-slate-700">Status<select value={form.status} onChange={(event) => setForm({ ...form, status: event.target.value as Status })} className="mt-2 w-full min-w-0 rounded-xl border border-slate-200 bg-white px-3 py-3.5 font-normal focus:border-indigo-500"><option>To Do</option><option>In Progress</option><option>Completed</option></select></label>
+                <label className="block text-sm font-semibold text-slate-700">Due date<input type="date" value={form.date} onChange={(event) => setForm({ ...form, date: event.target.value })} className="mt-2 w-full min-w-0 rounded-xl border border-slate-200 bg-white px-3 py-3.5 font-normal focus:border-indigo-500" /></label>
               </div>
-              <div className="flex flex-col-reverse gap-3 pt-3 sm:flex-row sm:justify-end"><button type="button" onClick={() => setModalOpen(false)} className="rounded-xl border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-600 hover:bg-slate-50">Cancel</button><button type="submit" disabled={saving} className="rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white hover:bg-indigo-700">{saving ? "Saving..." : editingId ? "Save changes" : "Create task"}</button></div>
+              <div className="flex flex-col-reverse gap-3 border-t border-slate-100 pt-5 sm:flex-row sm:justify-end"><button type="button" disabled={saving} onClick={() => setModalOpen(false)} className="rounded-xl border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-600 hover:bg-slate-50">Cancel</button><button type="submit" disabled={saving} className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-indigo-700 disabled:opacity-60">{saving ? "Saving..." : editingId ? "Save changes" : "Create task"}<ArrowRight size={17} /></button></div>
             </form>
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+function EmptyTasks({ onAdd, hasTasks }: { onAdd: () => void; hasTasks: boolean }) {
+  return (
+    <div className="flex flex-col items-center justify-center px-4 py-10 text-center">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-500"><ClipboardList size={27} /></div>
+      <h4 className="mt-4 text-base font-bold text-slate-900">{hasTasks ? "No matching tasks" : "Your workspace is ready"}</h4>
+      <p className="mt-2 max-w-xs text-sm leading-6 text-slate-500">{hasTasks ? "Try clearing your filters to see more tasks." : "Create your first task and start making progress."}</p>
+      {!hasTasks && <button type="button" onClick={onAdd} className="mt-5 inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-3 text-sm font-bold text-white transition hover:bg-indigo-700"><Plus size={16} /> Add your first task</button>}
     </div>
   );
 }

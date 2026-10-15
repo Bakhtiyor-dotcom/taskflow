@@ -1,0 +1,14 @@
+@keyframes fadeRise {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes floatGlow {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -16px, 0); }
+}
+.enter { animation: fadeRise .55s ease-out both; }
+.enterDelayed { animation: fadeRise .7s .12s ease-out both; }
+.float { animation: floatGlow 9s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .enter, .enterDelayed, .float { animation: none; }
+}
