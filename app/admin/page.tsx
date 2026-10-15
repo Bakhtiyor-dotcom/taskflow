@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { notFound, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import {
   ArrowLeft,
@@ -67,9 +67,9 @@ async function AdminContent() {
     .maybeSingle();
 
   if (roleError || !adminRole) {
-    notFound();
-  }
+    redirect("/access-denied");
 
+  }
   // The database function checks app_admins AGAIN before returning any
   // cross-user statistics. No service-role key is sent to the browser.
   const { data, error } = await supabase.rpc("admin_dashboard_data");
